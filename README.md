@@ -1,2 +1,2 @@
-# ZurvanDB
-key-value in memory time based database
+# TimeTrace
+key-value in memory time-based database
