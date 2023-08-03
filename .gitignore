@@ -1,0 +1,27 @@
+# Compiled binary files
+*.exe
+*.out
+*.dll
+*.so
+*.dylib
+
+# Compiled object files
+*.o
+
+# Go binary and test coverage reports
+*.test
+*.prof
+
+# Dependency directories (remove these if using Go modules)
+/vendor/
+/Godeps/
+
+# Ignore IDE and editor-specific files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS-specific files
+.DS_Store
+Thumbs.db
