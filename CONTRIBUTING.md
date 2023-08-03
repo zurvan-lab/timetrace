@@ -1,11 +1,11 @@
 # Contributing
 
-Thank you for considering contributing to go-bubble!
+Thank you for considering contributing to go-TimeTraceDB!
 Please read these guidelines before submitting a pull request or opening an issue.
 
 ## Code guidelines
 
-We strive to maintain clean, readable, and maintainable code in go-bubble.
+We strive to maintain clean, readable, and maintainable code in go-TimeTraceDB.
 Please follow these guidelines when contributing code to the project:
 
 - Code should follow the [Effective Go](https://golang.org/doc/effective_go.html) guidelines.
@@ -26,7 +26,7 @@ The following commands are available in the Makefile:
 
 ## Commit guidelines
 
-Please follow these guidelines when committing changes to go-bubble:
+Please follow these guidelines when committing changes to go-TimeTraceDB:
 
 - Each commit should represent a single, atomic change to the codebase.
   Avoid making multiple unrelated changes in a single commit.
@@ -55,4 +55,4 @@ Please read it before contributing to the project.
 
 ---
 
-Thank you for your contributions to go-bubble!
+Thank you for your contributions to go-TimeTraceDB!
