@@ -1,4 +1,4 @@
-ACKAGES=$(shell go list ./... | grep -v 'tests')
+PACKAGES=$(shell go list ./... | grep -v 'tests')
 
 ### Testing
 unit_test:
