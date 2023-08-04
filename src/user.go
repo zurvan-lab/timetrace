@@ -1,7 +1,7 @@
 package src
 
 import (
-	"math/rand"
+	"github.com/zurvan-lab/TimeTraceDB/utils"
 )
 
 type User struct {
@@ -17,7 +17,7 @@ func CreateUsers() *Users {
 
 func (u *Users) NewUser(name, Token string, cmds []string) {
 	for {
-		id := rand.Intn(99999999)
+		id, _ := utils.GenerateRandomNumber(1, 99999999)
 		if _, ok := (*u)[id]; !ok {
 			(*u)[id] = User{Name: name, Cmds: cmds, Token: Token}
 			break

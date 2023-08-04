@@ -3,6 +3,7 @@ package src
 import (
 	"os"
 
+	"github.com/zurvan-lab/TimeTraceDB/log"
 	"gopkg.in/yaml.v2"
 )
 
@@ -12,13 +13,13 @@ type Config struct {
 		Cores, Threads int
 	}
 	Listen struct {
-		Ip, Port string
+		IP, Port string
 	}
 	Log struct {
 		Path string
 	}
 	User struct {
-		Name string
+		Name  string
 		Token string
 	}
 }
@@ -30,7 +31,7 @@ func createConfig() *Config {
 func ReadConfigFile(path string) *Config {
 	file, err := os.Open(path)
 	if err != nil {
-		// TODO: log
+		log.Error("Can not open the config file", "error: ", err)
 	}
 	defer file.Close()
 
@@ -39,7 +40,7 @@ func ReadConfigFile(path string) *Config {
 	decoder := yaml.NewDecoder(file)
 	err = decoder.Decode(&config)
 	if err != nil {
-		// TODO: log
+		log.Error("Can not decode the Config Yaml file", "error: ", err)
 	}
 	//TODO: validate config
 	//TODO: Log

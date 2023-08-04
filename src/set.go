@@ -1,6 +1,5 @@
 package src
 
-
 type Set struct {
 	Elements Elements
 }
@@ -18,5 +17,5 @@ func (s *Sets) NewSet(key string) {
 }
 
 func (s *Set) NewElement(key string, v Value) {
-	s.Elements.AddElement(key,v)
+	s.Elements.AddElement(key, v)
 }
