@@ -1,7 +1,6 @@
 package src
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/zurvan-lab/TimeTraceDB/log"
@@ -42,7 +41,6 @@ func createConfig() *Config {
 }
 
 func ReadConfigFile(path string) *Config {
-	fmt.Println(path)
 	file, err := os.Open(path)
 	if err != nil {
 		log.Error("Can not open the config file", "error: ", err)

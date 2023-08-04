@@ -10,6 +10,7 @@ test:
 ### Formatting, linting, and vetting
 fmt:
 	gofmt -s -w .
+	go mod tidy
 
 check:
 	golangci-lint run \
