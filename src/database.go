@@ -12,10 +12,10 @@ type Database struct {
 	Users  Users
 }
 
-func CreateDataBase() *Database {
+func CreateDataBase(path string) *Database {
 	return &Database{
 		Sets:   *NewSets(),
-		Config: *ReadConfigFile(""),
+		Config: *ReadConfigFile(path),
 	}
 }
 
@@ -31,5 +31,5 @@ func (db *Database) InitUsers() {
 	users := CreateUsers()
 	db.Users = *users
 	cmds := []string{"all"}
-	users.NewUser(db.Config.User.Name, db.Config.User.Token, cmds)
+	users.NewUser(db.Config.FirstUser.Name, db.Config.FirstUser.Token, cmds)
 }

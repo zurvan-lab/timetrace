@@ -1,6 +1,7 @@
 package src
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/zurvan-lab/TimeTraceDB/log"
@@ -8,20 +9,32 @@ import (
 )
 
 type Config struct {
-	Authorization bool
-	Proc          struct {
-		Cores, Threads int
-	}
-	Listen struct {
-		IP, Port string
-	}
-	Log struct {
-		Path string
-	}
-	User struct {
-		Name  string
-		Token string
-	}
+	Name          string    `yaml:"name"`
+	Authorization bool      `yaml:"authorization"`
+	Proc          Proc      `yaml:"proc"`
+	Listen        Listen    `yaml:"server"`
+	Log           Log       `yaml:"log"`
+	FirstUser     FirstUser `yaml:"user"`
+}
+
+type Proc struct {
+	Cores   int `yaml:"cores"`
+	Threads int `yaml:"threads"`
+}
+
+type Listen struct {
+	IP   string `yaml:"listen"`
+	Port string `yaml:"port"`
+}
+
+type Log struct {
+	Path string `yaml:"path"`
+}
+
+type FirstUser struct {
+	Name  string   `yaml:"name"`
+	Token string   `yaml:"token"`
+	Cmd   []string `yaml:"cmd"`
 }
 
 func createConfig() *Config {
@@ -29,6 +42,7 @@ func createConfig() *Config {
 }
 
 func ReadConfigFile(path string) *Config {
+	fmt.Println(path)
 	file, err := os.Open(path)
 	if err != nil {
 		log.Error("Can not open the config file", "error: ", err)

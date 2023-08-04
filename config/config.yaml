@@ -2,17 +2,18 @@ name: TimeTraceConfig
 authorization: false
 
 proc:
- - cores: 2
- - threads: 4 
+  cores: 2
+  threads: 4
 
 server:
-  - listen: localhost
-  - port: 7070
+  listen: localhost
+  port: 7070
 
 log:
-  - path: ./log
+  path: ./log
 
 user:
-  - name: root
-  - token: super_secret_token
-  - cmd: []
+  name: root
+  token: super_secret_token
+  cmd:
+    - all
