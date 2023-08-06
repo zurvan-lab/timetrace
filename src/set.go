@@ -51,21 +51,15 @@ func (s *Set) Count() int {
 	return len((*s).Elements)
 }
 
-// TODO: Find List of Elements from a set
-
 // Remove Element from a set
 func (s *Set) Remove(Key string) {
 	delete((*s).Elements, Key)
 }
 
-// TODO: Remove list of elements from a set
-
 // Update Element from a set
 func (s *Set) Upadte(Key string, NewValue Value) {
 	(s.Elements)[Key] = NewValue
 }
-
-// TODO: Update list of elements from a set
 
 // Get All Keys
 func (s *Set) GetKeys() []string {
@@ -88,5 +82,9 @@ func (s *Set) GetValues() []Value {
 
 // TODO: Create Snapshot
 // TODO: End Snapshot
-
+// TODO: Find List of Elements from a set
 // TODO: Sort With Limit And Offset
+// TODO: regex search
+// TODO: Update list of elements from a set
+// TODO: Remove list of elements from a set
+// TODO: handles foreach operation on a set
