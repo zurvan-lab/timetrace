@@ -3,11 +3,11 @@ package main
 import (
 	"os"
 
-	"github.com/zurvan-lab/TimeTraceDB/src"
+	"github.com/zurvan-lab/TimeTraceDB/core/database"
 )
 
 func main() {
-	database := src.CreateDataBase(os.Args[1])
+	database := database.CreateDataBase(os.Args[0])
 	database.InitSocket()
 	database.InitUsers()
 }

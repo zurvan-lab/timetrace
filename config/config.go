@@ -1,4 +1,4 @@
-package src
+package config
 
 import (
 	"os"
@@ -40,7 +40,11 @@ func createConfig() *Config {
 	return &Config{}
 }
 
-func ReadConfigFile(path string) *Config {
+func (c Config) BasicCheck() error {
+	return nil
+}
+
+func LoadFromFile(path string) *Config {
 	file, err := os.Open(path)
 	if err != nil {
 		log.Error("Can not open the config file", "error: ", err)
