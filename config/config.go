@@ -58,7 +58,7 @@ func LoadFromFile(path string) *Config {
 	if err != nil {
 		log.Error("Can not decode the Config Yaml file", "error: ", err)
 	}
-	//TODO: validate config
-	//TODO: Log
+	// TODO: validate config
+	// TODO: Log
 	return config
 }
