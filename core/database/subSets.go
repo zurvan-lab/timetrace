@@ -1,7 +1,9 @@
 package database
 
-type SubSets map[string]SubSet
-type SubSet []Element
+type (
+	SubSets map[string]SubSet
+	SubSet  []Element
+)
 
 func NewSubSets() SubSets {
 	return SubSets{}
