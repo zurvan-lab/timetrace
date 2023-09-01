@@ -23,6 +23,8 @@ func addFields(event *zerolog.Event, keyvals ...interface{}) *zerolog.Event {
 			event.Stringer(key, v)
 		case []byte:
 			event.Str(key, fmt.Sprintf("%v", hex.EncodeToString(v)))
+		case error:
+			event.AnErr(key, v)
 		default:
 			event.Any(key, v)
 		}
