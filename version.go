@@ -21,7 +21,7 @@ var version = Version{
 }
 
 func Agent() string {
-	return fmt.Sprintf("timetrace/%s", GetVersionAsString())
+	return fmt.Sprintf("timetrace %s", StringVersion())
 }
 
 func StringVersion() string {
