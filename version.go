@@ -28,7 +28,7 @@ func GetVersionAsString() string {
 	return fmt.Sprintf("%d.%d.%d-%s", version.Major, version.Minor, version.Patch, version.Meta)
 }
 
-func GetVersionAsJSON() (string, error) {
+func JSONVersion() (string, error) {
 	v, err := json.Marshal(version)
 	if err != nil {
 		return "", err
