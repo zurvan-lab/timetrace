@@ -8,9 +8,9 @@ import (
 
 type Version struct {
 	Meta  string `json:"meta"  xml:"meta"`
-	Major uint8  `json:"major"  xml:"major"`
-	Minor uint8  `json:"minor"  xml:"minor"`
-	Patch uint8  `json:"patch"  xml:"patch"`
+	Major uint8  `json:"major" xml:"major"`
+	Minor uint8  `json:"minor" xml:"minor"`
+	Patch uint8  `json:"patch" xml:"patch"`
 }
 
 var version = Version{
@@ -30,7 +30,6 @@ func GetVersionAsString() string {
 
 func GetVersionAsJSON() (string, error) {
 	v, err := json.Marshal(version)
-
 	if err != nil {
 		return "", err
 	}
@@ -40,7 +39,6 @@ func GetVersionAsJSON() (string, error) {
 
 func GetVersionAsXML() (string, error) {
 	v, err := xml.MarshalIndent(version, "", " ")
-
 	if err != nil {
 		return "", err
 	}
