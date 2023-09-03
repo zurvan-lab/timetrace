@@ -37,7 +37,7 @@ func GetVersionAsJSON() (string, error) {
 	return string(v), nil
 }
 
-func GetVersionAsXML() (string, error) {
+func XMLVersion() (string, error) {
 	v, err := xml.MarshalIndent(version, "", " ")
 	if err != nil {
 		return "", err
