@@ -24,7 +24,7 @@ func Agent() string {
 	return fmt.Sprintf("timetrace/%s", GetVersionAsString())
 }
 
-func GetVersionAsString() string {
+func StringVersion() string {
 	return fmt.Sprintf("%d.%d.%d-%s", version.Major, version.Minor, version.Patch, version.Meta)
 }
 
