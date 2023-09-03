@@ -7,10 +7,10 @@ import (
 )
 
 type Version struct {
-	Meta  string `json:"meta" xml:"meta"`
-	Major uint8  `json:"major" xml:"major"`
-	Minor uint8  `json:"minor" xml:"minor"`
-	Patch uint8  `json:"patch" xml:"patch"`
+	Meta  string `json:"meta"  xml:"meta"`
+	Major uint8  `json:"major"  xml:"major"`
+	Minor uint8  `json:"minor"  xml:"minor"`
+	Patch uint8  `json:"patch"  xml:"patch"`
 }
 
 var version = Version{
@@ -28,7 +28,7 @@ func GetVersionAsString() string {
 	return fmt.Sprintf("%d.%d.%d-%s", version.Major, version.Minor, version.Patch, version.Meta)
 }
 
-func GetVersionAsJson() (string, error) {
+func GetVersionAsJSON() (string, error) {
 	v, err := json.Marshal(version)
 
 	if err != nil {
