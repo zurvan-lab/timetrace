@@ -5,14 +5,12 @@ import (
 	"os"
 
 	"github.com/zurvan-lab/TimeTraceDB/config"
-	"github.com/zurvan-lab/TimeTraceDB/core"
 )
 
 type Database struct {
 	Sets   Sets
 	Config config.Config
 	socket net.Listener
-	Users  core.Users
 }
 
 func CreateDataBase(path string) *Database {
@@ -28,11 +26,4 @@ func (db *Database) InitSocket() {
 	if err != nil {
 		os.Exit(1)
 	}
-}
-
-func (db *Database) InitUsers() {
-	users := core.CreateUsers()
-	db.Users = *users
-	cmds := []string{"all"}
-	users.NewUser(db.Config.FirstUser.Name, db.Config.FirstUser.Token, cmds)
 }
