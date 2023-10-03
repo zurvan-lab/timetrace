@@ -7,6 +7,6 @@ import (
 )
 
 func main() {
-	database := database.CreateDataBase(os.Args[0])
-	database.InitSocket()
+	database := database.Init(os.Args[0])
+	database.AddSet("test")
 }

@@ -1,7 +1,5 @@
 ### Todo
 - [ ] Get Sets Name
-- [ ] Drop Set
-- [ ] Clean Set
 - [ ] Get Elements of a set
 - [ ] Count elements of a set
 - [ ] Remove Element from a set
@@ -24,3 +22,5 @@
 
 
 ### ✓ Done
+- [X] Clean Set
+- [X] Drop Set
