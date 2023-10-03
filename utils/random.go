@@ -13,11 +13,3 @@ func GenerateRandomNumber(min, max int) (int, error) {
 
 	return int(n.Int64()) + min, nil
 }
-
-func BytesToString(data []byte) string {
-	return string(data)
-}
-
-func StringToBytes(s string) []byte {
-	return []byte(s)
-}
