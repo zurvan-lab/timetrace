@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/zurvan-lab/TimeTraceDB/core/database"
+	"github.com/zurvan-lab/TimeTrace/core/database"
 )
 
 func main() {

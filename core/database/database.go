@@ -1,7 +1,7 @@
 package database
 
 import (
-	"github.com/zurvan-lab/TimeTraceDB/config"
+	"github.com/zurvan-lab/TimeTrace/config"
 )
 
 type Database struct {
