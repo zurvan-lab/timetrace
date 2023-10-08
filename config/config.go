@@ -3,7 +3,7 @@ package config
 import (
 	"os"
 
-	"github.com/zurvan-lab/TimeTraceDB/log"
+	"github.com/zurvan-lab/TimeTrace/log"
 	"gopkg.in/yaml.v2"
 )
 
