@@ -1,19 +1,26 @@
-name: TimeTraceConfig
-authorization: false
-
-proc:
-  cores: 2
-  threads: 4
+name: time_trace
 
 server:
   listen: localhost
-  port: 7070
+  port: "7070"
 
 log:
-  path: ./log
+  path: ttrace.log
 
-user:
-  name: root
-  token: super_secret_token
-  cmd:
-    - all
+users:
+- name: root
+  pass_word: super_secret_password
+  cmds:
+  - '*'
+# Also you can use this for multiple users and limited commands
+# users:
+#   - name: root
+#     pass_word: super_secret_password
+#     cmd:
+#       - * # all commands.
+#   - name: developer
+#     password: secret_password
+#     cmd:
+#       - GET
+#       - PUSH
+#       - DEL

@@ -2,7 +2,6 @@ package log
 
 import (
 	"bytes"
-	"fmt"
 	"testing"
 
 	"github.com/rs/zerolog/log"
@@ -22,7 +21,6 @@ func TestLogger(t *testing.T) {
 
 	out := buf.String()
 
-	fmt.Println(out)
 	assert.Contains(t, out, "010203")
 	assert.Contains(t, out, "!INVALID-KEY!")
 	assert.Contains(t, out, "!MISSING-VALUE!")
