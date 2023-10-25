@@ -9,13 +9,14 @@ log:
 
 users:
 - name: root
-  pass_word: super_secret_password
+  password: super_secret_password
   cmds:
   - '*'
+
 # Also you can use this for multiple users and limited commands
 # users:
 #   - name: root
-#     pass_word: super_secret_password
+#     password: super_secret_password
 #     cmd:
 #       - * # all commands.
 #   - name: developer
