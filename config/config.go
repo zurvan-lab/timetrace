@@ -44,7 +44,7 @@ func (conf *Config) BasicCheck() error {
 func DefaultConfig() *Config {
 	config := &Config{
 		Server: Server{
-			IP: "localhost",
+			IP:   "localhost",
 			Port: "7070",
 		},
 		Log: Log{
