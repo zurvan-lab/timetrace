@@ -30,7 +30,7 @@ type Log struct {
 
 type User struct {
 	Name     string   `yaml:"name"`
-	PassWord string   `yaml:"pass_word"`
+	Password string   `yaml:"password"`
 	Cmds     []string `yaml:"cmds"`
 }
 
@@ -42,14 +42,19 @@ func (conf *Config) BasicCheck() error {
 }
 
 func DefaultConfig() *Config {
-	config := &Config{}
-	config.Log.Path = "ttrace.log"
-	config.Name = "time_trace"
-	config.Server.IP = "localhost"
-	config.Server.Port = "7070"
+	config := &Config{
+		Server: Server{
+			IP: "localhost",
+			Port: "7070",
+		},
+		Log: Log{
+			Path: "ttrace.log",
+		},
+		Name: "time_trace",
+	}
 	rootUser := User{
 		Name:     "root",
-		PassWord: "super_secret_password",
+		Password: "super_secret_password",
 		Cmds:     []string{"*"},
 	}
 	config.Users = append(config.Users, rootUser)
