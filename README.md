@@ -1,10 +1,13 @@
-<img alt="iroh" src="./.img/logo.svg" width="150" />
+<img alt="time-trace" src="./.img/logo.svg" width="150" />
 
-# Time Trace
+## TimeTrace
 
-Time trace is an In memory event or log, storage and stream platform.
-Which you can use to store and stream your service logs, events and ...
-Some of use cases of ttrace is storing and streaming price and other stuff in fintech services, storing IoT projects events (events from different devices) and also your project logs.
+[![Discord](https://badgen.net/badge/icon/discord?icon=discord&label)](https://discord.gg/EvYB9ZgYvV)
 
-# Full Documentation
-> SOON
+Time-trace is a software which allow you to store and stream your service logs, events and ..., in real-time.
+When you are using time-trace you are using a completely new data structure and model which is strongly mixed with time.
+
+
+### DOCs
+
+[Documentation](./doc/main.md)
