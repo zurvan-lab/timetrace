@@ -5,6 +5,7 @@ server:
   port: "7070"
 
 log:
+  write_to_file: true
   path: ttrace.log
 
 users:
@@ -18,10 +19,10 @@ users:
 #   - name: root
 #     password: super_secret_password
 #     cmd:
-#       - * # all commands.
+#       - '*' # all commands.
 #   - name: developer
 #     password: secret_password
 #     cmd:
-#       - GET
-#       - PUSH
-#       - DEL
+#       - 'GET'
+#       - 'PUSH'
+#       - 'DEL'

@@ -25,7 +25,8 @@ type Server struct {
 }
 
 type Log struct {
-	Path string `yaml:"path"`
+	WriteToFile bool   `yaml:"write_to_file"`
+	Path        string `yaml:"path"`
 }
 
 type User struct {
@@ -38,6 +39,18 @@ func (conf *Config) BasicCheck() error {
 	if len(conf.Users) <= 0 {
 		return errors.New("invalid user length")
 	}
+
+	for _, u := range conf.Users {
+		allCmds := false
+		for _, c := range u.Cmds {
+			if c == "*" {
+				allCmds = true
+			}
+		}
+		if allCmds && len(u.Cmds) > 1 {
+			return errors.New("can't have all cmds and specific cmd at same time")
+		}
+	}
 	return nil
 }
 
@@ -48,7 +61,8 @@ func DefaultConfig() *Config {
 			Port: "7070",
 		},
 		Log: Log{
-			Path: "ttrace.log",
+			WriteToFile: true,
+			Path:        "ttrace.log",
 		},
 		Name: "time_trace",
 	}
