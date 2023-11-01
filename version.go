@@ -6,6 +6,7 @@ import (
 	"fmt"
 )
 
+// These constants follow the semantic versioning 2.0.0 spec (http://semver.org/)
 type Version struct {
 	Meta  string `json:"meta"  xml:"meta"`
 	Major uint8  `json:"major" xml:"major"`
@@ -16,7 +17,7 @@ type Version struct {
 var version = Version{
 	Meta:  "beta",
 	Major: 0,
-	Minor: 1,
+	Minor: 0,
 	Patch: 0,
 }
 
