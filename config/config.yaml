@@ -6,7 +6,7 @@ server:
 
 log:
   write_to_file: true
-  path: ttrace.log
+  path: log.ttrace
 
 users:
 - name: root

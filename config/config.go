@@ -62,7 +62,7 @@ func DefaultConfig() *Config {
 		},
 		Log: Log{
 			WriteToFile: true,
-			Path:        "ttrace.log",
+			Path:        "log.ttrace",
 		},
 		Name: "time_trace",
 	}
