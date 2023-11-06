@@ -6,7 +6,7 @@ server:
 
 log:
   write_to_file: true
-  path: ttrace.log
+  path: log.ttrace        # Reminder, It is time trace file extention. 
 
 users:
 - name: root

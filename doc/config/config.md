@@ -37,7 +37,7 @@ How it looks in `config.yaml`:
 ```yml
 log:
   write_to_file: true
-  path: ttrace.log
+  path: log.ttrace
 ```
 
 #### users
