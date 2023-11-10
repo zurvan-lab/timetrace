@@ -1,7 +1,6 @@
 package config
 
 import (
-	"errors"
 	"strings"
 	"testing"
 
@@ -11,6 +10,7 @@ import (
 func TestDefaultConfig(t *testing.T) {
 	lines := strings.Split(string(configBytes), "\n")
 	defaultYaml := ""
+
 	for _, line := range lines {
 		if !(strings.HasPrefix(line, "# ") ||
 			strings.HasPrefix(line, "###") ||
@@ -52,10 +52,10 @@ func TestBasicCheck(t *testing.T) {
 
 	c.Users = []User{}
 	err = c.BasicCheck()
-	assert.Error(t, errors.New("invalid user length"), err)
+	assert.Error(t, InvalidUserLength, err)
 
 	c.Users = []User{DefaultConfig().Users[0]}
 	c.Users[0].Cmds = []string{"*", "GET"}
 	err = c.BasicCheck()
-	assert.Error(t, errors.New("can't have all cmds and specific cmd at same time"), err)
+	assert.Error(t, CommandAtSameTime, err)
 }

@@ -12,6 +12,11 @@ import (
 //go:embed config.yaml
 var configBytes []byte
 
+var (
+	InvalidUserLength = errors.New("invalid user length")
+	CommandAtSameTime = errors.New("can't have all cmds and specific cmd at same time")
+)
+
 type Config struct {
 	Name   string `yaml:"name"`
 	Server Server `yaml:"server"`
@@ -36,21 +41,24 @@ type User struct {
 }
 
 func (conf *Config) BasicCheck() error {
-	if len(conf.Users) <= 0 {
-		return errors.New("invalid user length")
+	if len(conf.Users) == 0 {
+		return InvalidUserLength
 	}
 
 	for _, u := range conf.Users {
 		allCmds := false
+
 		for _, c := range u.Cmds {
 			if c == "*" {
 				allCmds = true
 			}
 		}
+
 		if allCmds && len(u.Cmds) > 1 {
-			return errors.New("can't have all cmds and specific cmd at same time")
+			return CommandAtSameTime
 		}
 	}
+
 	return nil
 }
 
@@ -64,7 +72,8 @@ func DefaultConfig() *Config {
 			WriteToFile: true,
 			Path:        "log.ttrace",
 		},
-		Name: "time_trace",
+		Name:  "time_trace",
+		Users: []User{},
 	}
 	rootUser := User{
 		Name:     "root",
@@ -83,9 +92,21 @@ func LoadFromFile(path string) *Config {
 	}
 	defer file.Close()
 
-	config := &Config{}
+	config := &Config{
+		Name: "",
+		Server: Server{
+			IP:   "",
+			Port: "",
+		},
+		Log: Log{
+			WriteToFile: false,
+			Path:        "",
+		},
+		Users: []User{},
+	}
 
 	decoder := yaml.NewDecoder(file)
+
 	err = decoder.Decode(&config)
 	if err != nil {
 		panic(err)
@@ -102,6 +123,7 @@ func LoadFromFile(path string) *Config {
 func (conf *Config) ToYAML() []byte {
 	buf := new(bytes.Buffer)
 	encoder := yaml.NewEncoder(buf)
+
 	err := encoder.Encode(conf)
 	if err != nil {
 		panic(err)
