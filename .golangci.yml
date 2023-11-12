@@ -18,6 +18,12 @@ linters:
     - nonamedreturns
     - nlreturn 
     - ireturn 
+    - gofumpt
+    - tagalign
+    - funlen
+    - errname
+    - errorlint
+    - forcetypeassert
 
 
 linters-settings:

@@ -13,8 +13,8 @@ import (
 var configBytes []byte
 
 var (
-	InvalidUserLength = errors.New("invalid user length")
-	CommandAtSameTime = errors.New("can't have all cmds and specific cmd at same time")
+	ErrInvalidUserLength               = errors.New("invalid user length")
+	ErrSpecificAndAllCommandSameAtTime = errors.New("can't have all cmds and specific cmd at same time")
 )
 
 type Config struct {
@@ -42,7 +42,7 @@ type User struct {
 
 func (conf *Config) BasicCheck() error {
 	if len(conf.Users) == 0 {
-		return InvalidUserLength
+		return ErrInvalidUserLength
 	}
 
 	for _, u := range conf.Users {
@@ -55,7 +55,7 @@ func (conf *Config) BasicCheck() error {
 		}
 
 		if allCmds && len(u.Cmds) > 1 {
-			return CommandAtSameTime
+			return ErrSpecificAndAllCommandSameAtTime
 		}
 	}
 
@@ -72,9 +72,9 @@ func DefaultConfig() *Config {
 			WriteToFile: true,
 			Path:        "log.ttrace",
 		},
-		Name:  "time_trace",
+		Name: "time_trace",
 	}
-	
+
 	rootUser := User{
 		Name:     "root",
 		Password: "super_secret_password",
