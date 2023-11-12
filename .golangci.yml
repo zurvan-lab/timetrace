@@ -1,43 +1,24 @@
 linters:
-  enable-all: true
-  disable:
-    - scopelint # deprecated
-    - maligned # deprecated
-    - nosnakecase # deprecated
-    - interfacer # deprecated
-    - deadcode # deprecated
-    - ifshort # deprecated
-    - golint # deprecated
-    - structcheck # deprecated
-    - varcheck # deprecated
-    - exhaustivestruct # deprecated
-    - varnamelen
-    - wrapcheck
-    - paralleltest
-    - interfacebloat
-    - depguard
-    - gochecknoglobals
-    - gomnd
-    - cyclop
-    - nestif
-    - gochecknoinits
-    - dupl
-    - goconst
-    - gocognit # Consider to enable it
-    - gci  # Consider to enable it (add it to make fmt)
-    - godox # Consider to enable it (only show warning)
-    - gocritic # Consider to enable it
-    - wsl # Consider to enable it
-    - testpackage # Consider to enable it (??)
-    - containedctx # Consider to enable it
-    - contextcheck # Consider to enable it
-    - exhaustive # Consider to enable it
-    - exhaustruct # Consider to enable it
-    - goerr113 # Consider to enable it
-    - wastedassign # Consider to enable it
-    - nonamedreturns # Consider to enable it
-    - nlreturn # Consider to enable it
-    - ireturn  # Consider to enable it (??)
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    - gocognit
+    - godox 
+    - gocritic 
+    - wsl 
+    - containedctx
+    - contextcheck
+    - exhaustive 
+    - goerr113 
+    - wastedassign
+    - nonamedreturns
+    - nlreturn 
+    - ireturn 
+
 
 linters-settings:
   gosimple:
