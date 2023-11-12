@@ -52,10 +52,10 @@ func TestBasicCheck(t *testing.T) {
 
 	c.Users = []User{}
 	err = c.BasicCheck()
-	assert.Error(t, InvalidUserLength, err)
+	assert.Error(t, ErrInvalidUserLength, err)
 
 	c.Users = []User{DefaultConfig().Users[0]}
 	c.Users[0].Cmds = []string{"*", "GET"}
 	err = c.BasicCheck()
-	assert.Error(t, CommandAtSameTime, err)
+	assert.Error(t, ErrSpecificAndAllCommandSameAtTime, err)
 }
