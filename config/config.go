@@ -73,7 +73,6 @@ func DefaultConfig() *Config {
 			Path:        "log.ttrace",
 		},
 		Name:  "time_trace",
-		Users: []User{},
 	}
 	rootUser := User{
 		Name:     "root",
@@ -92,18 +91,7 @@ func LoadFromFile(path string) *Config {
 	}
 	defer file.Close()
 
-	config := &Config{
-		Name: "",
-		Server: Server{
-			IP:   "",
-			Port: "",
-		},
-		Log: Log{
-			WriteToFile: false,
-			Path:        "",
-		},
-		Users: []User{},
-	}
+	config := &Config{}
 
 	decoder := yaml.NewDecoder(file)
 
