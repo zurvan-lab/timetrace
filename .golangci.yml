@@ -7,7 +7,6 @@ linters:
     - staticcheck
     - unused
     - gocognit
-    - gci
     - godox 
     - gocritic 
     - wsl 
