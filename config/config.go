@@ -74,6 +74,7 @@ func DefaultConfig() *Config {
 		},
 		Name:  "time_trace",
 	}
+	
 	rootUser := User{
 		Name:     "root",
 		Password: "super_secret_password",
