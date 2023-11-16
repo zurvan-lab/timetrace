@@ -58,7 +58,7 @@ func (db *Database) DropSet(name string) string {
 func (db *Database) DropSubSet(set, subset string) string {
 	_, ok := db.Sets[set][subset]
 	if !ok {
-		return "SUBETNF"
+		return "SUBSETNF"
 	}
 
 	delete(db.Sets[set], subset)
@@ -86,7 +86,7 @@ func (db *Database) CleanSet(name string) string {
 func (db *Database) CleanSubSet(set, subset string) string {
 	_, ok := db.Sets[set][subset]
 	if !ok {
-		return "SUBETNF"
+		return "SUBSETNF"
 	}
 
 	db.Sets[set][subset] = make(SubSet, 0)

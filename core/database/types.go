@@ -3,7 +3,7 @@ package database
 import "time"
 
 type Element struct {
-	value string
+	value []byte
 	time  time.Time
 }
 
