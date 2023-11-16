@@ -14,7 +14,7 @@ Something like this:
 And this is how they look likes in code:
 ```go
 type Element struct {
-	value string
+	value []byte
 	time  time.Time
 }
 ```
