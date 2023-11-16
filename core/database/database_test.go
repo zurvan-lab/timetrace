@@ -26,7 +26,7 @@ func TestDataBase(t *testing.T) {
 
 		result = db.AddSubSet("testInvalidSet", "testSubSet")
 
-		assert.Equal(t, "SETNF", result)
+		assert.Equal(t, "SNF", result)
 	})
 
 	t.Run("pushElementTest", func(t *testing.T) {
@@ -43,7 +43,7 @@ func TestDataBase(t *testing.T) {
 
 		result = db.PushElement("invalidTestSet", "invalidTestSubSet", Element{value: []byte("testValue"), time: time})
 
-		assert.Equal(t, "SUBSETNF", result)
+		assert.Equal(t, "SSNF", result)
 		assert.Equal(t, 1, len(db.Sets["testSet"]["testSubSet"]))
 		assert.Equal(t, []byte("testValue"), db.Sets["testSet"]["testSubSet"][0].value)
 		assert.Equal(t, time, db.Sets["testSet"]["testSubSet"][0].time)
@@ -61,7 +61,7 @@ func TestDataBase(t *testing.T) {
 
 		result = db.DropSet("inavlidTestSet")
 
-		assert.Equal(t, "SETNF", result)
+		assert.Equal(t, "SNF", result)
 		assert.Equal(t, 2, len(db.Sets))
 	})
 
@@ -80,7 +80,7 @@ func TestDataBase(t *testing.T) {
 
 		result = db.DropSubSet("secondTestSet", "subSetOne")
 
-		assert.Equal(t, "SUBSETNF", result)
+		assert.Equal(t, "SSNF", result)
 	})
 
 	t.Run("cleanTest", func(t *testing.T) {
@@ -116,9 +116,9 @@ func TestDataBase(t *testing.T) {
 		assert.Equal(t, 0, len(db.Sets))
 
 		result = db.CleanSet("invalidSet")
-		assert.Equal(t, "SETNF", result)
+		assert.Equal(t, "SNF", result)
 
 		result = db.CleanSubSet("invalidSet", "invalidSubSet")
-		assert.Equal(t, "SUBSETNF", result)
+		assert.Equal(t, "SSNF", result)
 	})
 }

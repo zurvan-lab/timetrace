@@ -25,7 +25,7 @@ func (db *Database) AddSet(name string) string {
 func (db *Database) AddSubSet(set, name string) string {
 	s, ok := db.Sets[set]
 	if !ok {
-		return "SETNF"
+		return "SNF"
 	}
 
 	s[name] = make(SubSet, 0)
@@ -36,7 +36,7 @@ func (db *Database) AddSubSet(set, name string) string {
 func (db *Database) PushElement(set, subset string, e Element) string {
 	_, ok := db.Sets[set][subset]
 	if !ok {
-		return "SUBSETNF"
+		return "SSNF"
 	}
 
 	db.Sets[set][subset] = append(db.Sets[set][subset], e)
@@ -47,7 +47,7 @@ func (db *Database) PushElement(set, subset string, e Element) string {
 func (db *Database) DropSet(name string) string {
 	_, ok := db.Sets[name]
 	if !ok {
-		return "SETNF"
+		return "SNF"
 	}
 
 	delete(db.Sets, name)
@@ -58,7 +58,7 @@ func (db *Database) DropSet(name string) string {
 func (db *Database) DropSubSet(set, subset string) string {
 	_, ok := db.Sets[set][subset]
 	if !ok {
-		return "SUBSETNF"
+		return "SSNF"
 	}
 
 	delete(db.Sets[set], subset)
@@ -75,7 +75,7 @@ func (db *Database) CleanSets() string {
 func (db *Database) CleanSet(name string) string {
 	_, ok := db.Sets[name]
 	if !ok {
-		return "SETNF"
+		return "SNF"
 	}
 
 	db.Sets[name] = make(Set)
@@ -86,7 +86,7 @@ func (db *Database) CleanSet(name string) string {
 func (db *Database) CleanSubSet(set, subset string) string {
 	_, ok := db.Sets[set][subset]
 	if !ok {
-		return "SUBSETNF"
+		return "SSNF"
 	}
 
 	db.Sets[set][subset] = make(SubSet, 0)
