@@ -7,6 +7,11 @@ type Element struct {
 	time  time.Time
 }
 
+type Query struct {
+	Command string
+	Args    []string
+}
+
 type (
 	Sets   map[string]Set
 	Set    map[string]SubSet
