@@ -15,18 +15,24 @@ type Version struct {
 }
 
 var version = Version{
-	Meta:  "beta",
 	Major: 0,
 	Minor: 1,
 	Patch: 0,
+	Meta:  "beta",
 }
 
 func Agent() string {
-	return fmt.Sprintf("timetrace %s", StringVersion())
+	return fmt.Sprintf("timetrace/%s", StringVersion())
 }
 
 func StringVersion() string {
-	return fmt.Sprintf("%d.%d.%d-%s", version.Major, version.Minor, version.Patch, version.Meta)
+	v := fmt.Sprintf("%d.%d.%d", version.Major, version.Minor, version.Patch)
+
+	if version.Meta != "" {
+		v = fmt.Sprintf("%s-%s", v, version.Meta)
+	}
+
+	return v
 }
 
 func JSONVersion() (string, error) {
