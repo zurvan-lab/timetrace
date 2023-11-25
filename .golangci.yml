@@ -7,17 +7,17 @@ linters:
     - staticcheck
     - unused
     - gocognit
-    - godox 
-    - gocritic 
-    - wsl 
+    - godox
+    - godot
+    - gocritic
+    - wsl
     - containedctx
     - contextcheck
-    - exhaustive 
-    - goerr113 
+    - exhaustive
+    - goerr113
     - wastedassign
     - nonamedreturns
-    - nlreturn 
-    - ireturn 
+    - nlreturn
     - gofumpt
     - tagalign
     - funlen

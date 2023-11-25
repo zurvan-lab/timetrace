@@ -14,6 +14,7 @@ Time trace is using a query language called TQL. Here is documentation and speci
 | GET | get elements of a subset | set-name - subset-name - [last n elements (optional)] - [regex filter] - [unix-timestamp]|
 | CNTSS | returns count of subsets | set-name |
 | CNTE | returns count of elements | set-name - subset-name |
+| CLN | cleans all database sets (the sets themselves) | set-name - subset-name |
 | CLNS | cleans all sub-sets of a set | set-name |
 | CLNSS | cleans all elements of a subset | set-name - subset-name |
 | DRPS | drops a set | set-name |
