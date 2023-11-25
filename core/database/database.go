@@ -25,12 +25,20 @@ func (db *Database) SetsMap() Sets {
 
 // ! Commands.
 func (db *Database) AddSet(args []string) string {
+	if len(args) != 1 {
+		return "INVALID"
+	}
+
 	db.Sets[args[0]] = make(Set) // args[0] is set name. see: TQL docs.
 
 	return "DONE"
 }
 
 func (db *Database) AddSubSet(args []string) string {
+	if len(args) != 2 {
+		return "INVALID"
+	}
+
 	s, ok := db.Sets[args[0]] // set name args[0]
 	if !ok {
 		return "SNF"
@@ -42,6 +50,10 @@ func (db *Database) AddSubSet(args []string) string {
 }
 
 func (db *Database) PushElement(args []string) string {
+	if len(args) != 4 {
+		return "INVALID"
+	}
+
 	setName := args[0]
 	subSetName := args[1]
 	elementValue := []byte(args[2])
@@ -66,6 +78,10 @@ func (db *Database) PushElement(args []string) string {
 }
 
 func (db *Database) DropSet(args []string) string {
+	if len(args) != 1 {
+		return "INVALID"
+	}
+
 	setName := args[0]
 	_, ok := db.Sets[setName]
 
@@ -79,6 +95,10 @@ func (db *Database) DropSet(args []string) string {
 }
 
 func (db *Database) DropSubSet(args []string) string {
+	if len(args) != 2 {
+		return "INVALID"
+	}
+
 	setName := args[0]
 	subSetName := args[1]
 
@@ -99,6 +119,10 @@ func (db *Database) CleanSets(_ []string) string {
 }
 
 func (db *Database) CleanSet(args []string) string {
+	if len(args) != 1 {
+		return "INVALID"
+	}
+
 	setName := args[0]
 
 	_, ok := db.Sets[setName]
@@ -112,6 +136,10 @@ func (db *Database) CleanSet(args []string) string {
 }
 
 func (db *Database) CleanSubSet(args []string) string {
+	if len(args) != 2 {
+		return "INVALID"
+	}
+
 	setName := args[0]
 	subSetName := args[1]
 
