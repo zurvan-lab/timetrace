@@ -1,6 +1,7 @@
 package database
 
 import (
+	"strconv"
 	"testing"
 	"time"
 
@@ -11,114 +12,118 @@ func TestDataBase(t *testing.T) {
 	db := Init("../../config/config.yaml")
 
 	t.Run("addSetTest", func(t *testing.T) {
-		result := db.AddSet("testSet")
+		result := db.AddSet([]string{"testSet"})
 
-		assert.Equal(t, 1, len(db.Sets))
+		assert.Equal(t, 1, len(db.SetsMap()))
 		assert.Equal(t, "DONE", result)
 	})
 
 	t.Run("AddSubSetTest", func(t *testing.T) {
-		db.AddSet("testSet")
-		result := db.AddSubSet("testSet", "testSubSet")
+		db.AddSet([]string{"testSet"})
+		result := db.AddSubSet([]string{"testSet", "testSubSet"})
 
-		assert.Equal(t, 0, len(db.Sets["testSet"]["testSubSet"]))
+		assert.Equal(t, 0, len(db.SetsMap()["testSet"]["testSubSet"]))
 		assert.Equal(t, "DONE", result)
 
-		result = db.AddSubSet("testInvalidSet", "testSubSet")
+		result = db.AddSubSet([]string{"testInvalidSet", "testSubSet"})
 
 		assert.Equal(t, "SNF", result)
 	})
 
 	t.Run("pushElementTest", func(t *testing.T) {
-		db.AddSet("testSet")
-		db.AddSubSet("testSet", "testSubSet")
+		db.AddSet([]string{"testSet"})
+		db.AddSubSet([]string{"testSet", "testSubSet"})
 
 		time := time.Now()
-		result := db.PushElement("testSet", "testSubSet", Element{value: []byte("testValue"), time: time})
+		timeStr := strconv.Itoa(int(time.Unix()))
+		result := db.PushElement([]string{"testSet", "testSubSet", "testValue", timeStr})
 
 		assert.Equal(t, "DONE", result)
-		assert.Equal(t, 1, len(db.Sets["testSet"]["testSubSet"]))
-		assert.Equal(t, []byte("testValue"), db.Sets["testSet"]["testSubSet"][0].value)
-		assert.Equal(t, time, db.Sets["testSet"]["testSubSet"][0].time)
+		assert.Equal(t, 1, len(db.SetsMap()["testSet"]["testSubSet"]))
+		assert.Equal(t, []byte("testValue"), db.SetsMap()["testSet"]["testSubSet"][0].value)
+		elementTime := strconv.Itoa(int(db.SetsMap()["testSet"]["testSubSet"][0].time.Unix()))
+		assert.Equal(t, timeStr, elementTime)
 
-		result = db.PushElement("invalidTestSet", "invalidTestSubSet", Element{value: []byte("testValue"), time: time})
+		result = db.PushElement([]string{"invalidTestSet", "invalidTestSubSet", "testValue", timeStr})
 
 		assert.Equal(t, "SSNF", result)
-		assert.Equal(t, 1, len(db.Sets["testSet"]["testSubSet"]))
-		assert.Equal(t, []byte("testValue"), db.Sets["testSet"]["testSubSet"][0].value)
-		assert.Equal(t, time, db.Sets["testSet"]["testSubSet"][0].time)
+		assert.Equal(t, 1, len(db.SetsMap()["testSet"]["testSubSet"]))
+		assert.Equal(t, []byte("testValue"), db.SetsMap()["testSet"]["testSubSet"][0].value)
+		elementTime = strconv.Itoa(int(db.SetsMap()["testSet"]["testSubSet"][0].time.Unix()))
+		assert.Equal(t, timeStr, elementTime)
 	})
 
 	t.Run("dropSetTest", func(t *testing.T) {
-		db.AddSet("testSet")
-		db.AddSet("secondTestSet")
-		db.AddSet("thirdTestSet")
+		db.AddSet([]string{"testSet"})
+		db.AddSet([]string{"secondTestSet"})
+		db.AddSet([]string{"thirdTestSet"})
 
-		result := db.DropSet("testSet")
+		result := db.DropSet([]string{"testSet"})
 
-		assert.Equal(t, 2, len(db.Sets))
+		assert.Equal(t, 2, len(db.SetsMap()))
 		assert.Equal(t, "DONE", result)
 
-		result = db.DropSet("inavlidTestSet")
+		result = db.DropSet([]string{"inavlidTestSet"})
 
 		assert.Equal(t, "SNF", result)
-		assert.Equal(t, 2, len(db.Sets))
+		assert.Equal(t, 2, len(db.SetsMap()))
 	})
 
 	t.Run("dropSubSetTest", func(t *testing.T) {
-		db.AddSet("testSet")
-		db.AddSet("secondTestSet")
+		db.AddSet([]string{"testSet"})
+		db.AddSet([]string{"secondTestSet"})
 
-		db.AddSubSet("testSet", "subSetOne")
-		db.AddSubSet("testSet", "subSetTwo")
+		db.AddSubSet([]string{"testSet", "subSetOne"})
+		db.AddSubSet([]string{"testSet", "subSetTwo"})
 
-		result := db.DropSubSet("testSet", "subSetOne")
+		result := db.DropSubSet([]string{"testSet", "subSetOne"})
 
 		assert.Equal(t, "DONE", result)
-		assert.Equal(t, 1, len(db.Sets["testSet"]))
-		assert.Nil(t, db.Sets["testSet"]["subSetOne"])
+		assert.Equal(t, 1, len(db.SetsMap()["testSet"]))
+		assert.Nil(t, db.SetsMap()["testSet"]["subSetOne"])
 
-		result = db.DropSubSet("secondTestSet", "subSetOne")
+		result = db.DropSubSet([]string{"secondTestSet", "subSetOne"})
 
 		assert.Equal(t, "SSNF", result)
 	})
 
 	t.Run("cleanTest", func(t *testing.T) {
-		db.AddSet("testSet")
-		db.AddSet("secondTestSet")
-		db.AddSet("thirdTestSet")
+		db.AddSet([]string{"testSet"})
+		db.AddSet([]string{"secondTestSet"})
+		db.AddSet([]string{"thirdTestSet"})
 
-		db.AddSubSet("testSet", "subSetOne")
-		db.AddSubSet("testSet", "subSetTwo")
+		db.AddSubSet([]string{"testSet", "subSetOne"})
+		db.AddSubSet([]string{"testSet", "subSetTwo"})
 
-		db.AddSubSet("secondTestSet", "subSetOne")
-		db.AddSubSet("secondTestSet", "subSetTwo")
+		db.AddSubSet([]string{"secondTestSet", "subSetOne"})
+		db.AddSubSet([]string{"secondTestSet", "subSetTwo"})
 
 		time := time.Now()
-		db.PushElement("testSet", "subSetOne", Element{value: []byte("testValue"), time: time})
-		db.PushElement("testSet", "subSetTwo", Element{value: []byte("testValue"), time: time})
+		timeStr := strconv.Itoa(int(time.Unix()))
+		db.PushElement([]string{"testSet", "subSetOne", "testValue", timeStr})
+		db.PushElement([]string{"testSet", "subSetTwo", "testValue", timeStr})
 
-		db.PushElement("secondTestSet", "subSetTwo", Element{value: []byte("testValue"), time: time})
+		db.PushElement([]string{"secondTestSet", "subSetTwo", "testValue", timeStr})
 
-		result := db.CleanSubSet("secondTestSet", "subSetTwo")
-
-		assert.Equal(t, "DONE", result)
-		assert.Equal(t, 0, len(db.Sets["secondTestSet"]["subSetTwo"]))
-
-		result = db.CleanSet("testSet")
+		result := db.CleanSubSet([]string{"secondTestSet", "subSetTwo"})
 
 		assert.Equal(t, "DONE", result)
-		assert.Equal(t, 0, len(db.Sets["testSet"]))
+		assert.Equal(t, 0, len(db.SetsMap()["secondTestSet"]["subSetTwo"]))
 
-		result = db.CleanSets()
+		result = db.CleanSet([]string{"testSet"})
 
 		assert.Equal(t, "DONE", result)
-		assert.Equal(t, 0, len(db.Sets))
+		assert.Equal(t, 0, len(db.SetsMap()["testSet"]))
 
-		result = db.CleanSet("invalidSet")
+		result = db.CleanSets([]string{})
+
+		assert.Equal(t, "DONE", result)
+		assert.Equal(t, 0, len(db.SetsMap()))
+
+		result = db.CleanSet([]string{"invalidSet"})
 		assert.Equal(t, "SNF", result)
 
-		result = db.CleanSubSet("invalidSet", "invalidSubSet")
+		result = db.CleanSubSet([]string{"invalidSet", "invalidSubSet"})
 		assert.Equal(t, "SSNF", result)
 	})
 }

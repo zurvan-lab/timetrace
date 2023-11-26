@@ -6,7 +6,7 @@ import (
 	"github.com/zurvan-lab/TimeTrace/core/database"
 )
 
-// parsing TQL queries. see: docs/TQL
+// parsing TQL queries. see: docs/TQL.
 func ParseQuery(query string) database.Query {
 	command := ""
 	args := []string{}
@@ -24,8 +24,4 @@ func ParseQuery(query string) database.Query {
 	}
 
 	return database.Query{Command: command, Args: args}
-}
-
-func Execute(query database.Query, db database.Database) string {
-	return ""
 }
