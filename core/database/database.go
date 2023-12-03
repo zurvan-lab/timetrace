@@ -1,6 +1,7 @@
 package database
 
 import (
+	"fmt"
 	"strconv"
 	"time"
 
@@ -14,7 +15,7 @@ type Database struct {
 
 func Init(path string) IDataBase {
 	return &Database{
-		Sets:   make(Sets),
+		Sets:   make(Sets, 1024),
 		Config: config.LoadFromFile(path),
 	}
 }
@@ -23,7 +24,7 @@ func (db *Database) SetsMap() Sets {
 	return db.Sets
 }
 
-// ! Commands.
+// ! TQL Commands.
 func (db *Database) AddSet(args []string) string {
 	if len(args) != 1 {
 		return "INVALID"
@@ -56,7 +57,7 @@ func (db *Database) PushElement(args []string) string {
 
 	setName := args[0]
 	subSetName := args[1]
-	elementValue := []byte(args[2])
+	elementValue := args[2]
 	timeStr := args[3]
 
 	_, ok := db.Sets[setName][subSetName]
@@ -151,4 +152,49 @@ func (db *Database) CleanSubSet(args []string) string {
 	db.Sets[setName][subSetName] = make(SubSet, 0)
 
 	return "DONE"
+}
+
+func (db *Database) CountSets(args []string) string {
+	i := 0
+	for range db.Sets {
+		i++
+	}
+
+	return fmt.Sprint(i)
+}
+
+func (db *Database) CountSubSets(args []string) string {
+	if len(args) != 1 {
+		return "INVALID"
+	}
+
+	set, ok := db.Sets[args[0]]
+	if !ok {
+		return "SNF"
+	}
+
+	i := 0
+	for range set {
+		i++
+	}
+
+	return fmt.Sprint(i)
+}
+
+func (db *Database) CountElements(args []string) string {
+	if len(args) != 2 {
+		return "INVALID"
+	}
+
+	subSet, ok := db.Sets[args[0]][args[1]]
+	if !ok {
+		return "SSNF"
+	}
+
+	i := 0
+	for range subSet {
+		i++
+	}
+
+	return fmt.Sprint(i)
 }

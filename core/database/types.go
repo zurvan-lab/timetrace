@@ -3,8 +3,8 @@ package database
 import "time"
 
 type Element struct {
-	value []byte
-	time  time.Time
+	value string    // currently ttrace only supports string datatype for value.
+	time  time.Time // will return and input from user as unix timestamp.
 }
 
 type Query struct {

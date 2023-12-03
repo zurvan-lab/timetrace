@@ -11,4 +11,7 @@ type IDataBase interface {
 	CleanSet([]string) string
 	CleanSets([]string) string
 	CleanSubSet([]string) string
+	CountSets([]string) string
+	CountSubSets([]string) string
+	CountElements([]string) string
 }
