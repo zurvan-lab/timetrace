@@ -1,6 +1,10 @@
 package database
 
-import "time"
+import (
+	"fmt"
+	"strings"
+	"time"
+)
 
 type Element struct {
 	value string    // currently ttrace only supports string datatype for value.
@@ -17,3 +21,12 @@ type (
 	Set    map[string]SubSet
 	SubSet []Element
 )
+
+func (ss SubSet) String() string {
+	var builder strings.Builder
+	for _, s := range ss {
+		builder.WriteString(fmt.Sprintf(" %v-%d ", s.value, s.time.Unix()))
+	}
+
+	return builder.String()
+}

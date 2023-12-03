@@ -3,6 +3,7 @@ package database
 import (
 	"fmt"
 	"strconv"
+	"strings"
 	"testing"
 	"time"
 
@@ -155,5 +156,37 @@ func TestDataBase(t *testing.T) {
 
 		result = db.CountElements([]string{"testSet", "subSetOne"})
 		assert.Equal(t, "1", result)
+	})
+
+	t.Run("getTest", func(t *testing.T) {
+		db.AddSet([]string{"testSet"})
+		db.AddSubSet([]string{"testSet", "subSetOne"})
+
+		time := time.Now()
+		timeStr := strconv.Itoa(int(time.Unix()))
+		for i := 0; i < 50; i++ {
+			db.PushElement([]string{"testSet", "subSetOne", "testValue", timeStr})
+		}
+
+		result := db.GetElements([]string{"testSet", "subSetOne"})
+
+		trimmedResult, _ := strings.CutPrefix(result, "  ")
+		trimmedResult, _ = strings.CutPrefix(trimmedResult, "  ")
+		fmt.Print(trimmedResult)
+		resultsArray := strings.Split(trimmedResult, "  ")
+
+		assert.NotEqual(t, "INVALID", result)
+		assert.NotEqual(t, "SSNF", result)
+		assert.Equal(t, 50, len(resultsArray))
+
+		result = db.GetElements([]string{"testSet", "subSetOne", "10"})
+
+		trimmedResult, _ = strings.CutPrefix(result, "  ")
+		trimmedResult, _ = strings.CutPrefix(trimmedResult, "  ")
+		resultsArray = strings.Split(trimmedResult, "  ")
+
+		assert.NotEqual(t, "INVALID", result)
+		assert.NotEqual(t, "SSNF", result)
+		assert.Equal(t, 10, len(resultsArray))
 	})
 }

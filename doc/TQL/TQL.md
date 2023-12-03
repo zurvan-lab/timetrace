@@ -13,7 +13,7 @@ Time trace is using a query language called TQL. Here is documentation and speci
 | SET * |    make a new set   | set-name |
 | SSET * | make a new subset | set-name - subset-name |
 | PUSH * | push an element to a subset | set-name - subset-name - value-of-element - time(unix-timestamp) |
-| GET | get elements of a subset | set-name - subset-name - [last n elements (optional)] - [regex filter] - [unix-timestamp]|
+| GET * | get elements of a subset | set-name - subset-name - [last n elements (optional)] |
 | CNTS * | returns count of sets |  |
 | CNTSS * | returns count of subsets | set-name |
 | CNTE * | returns count of elements | set-name - subset-name |

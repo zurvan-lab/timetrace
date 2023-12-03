@@ -18,6 +18,7 @@ var Executors ExecutorMap = ExecutorMap{
 	"CNTE":  database.IDataBase.CountElements,
 	"CNTS":  database.IDataBase.CountSets,
 	"CNTSS": database.IDataBase.CountSubSets,
+	"GET":   database.IDataBase.GetElements,
 }
 
 func Execute(q database.Query, db database.IDataBase) string {
