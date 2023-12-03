@@ -50,6 +50,7 @@ func TestDataBase(t *testing.T) {
 		assert.Equal(t, "SSNF", result)
 		assert.Equal(t, 1, len(db.SetsMap()["testSet"]["testSubSet"]))
 		assert.Equal(t, "testValue", db.SetsMap()["testSet"]["testSubSet"][0].value)
+
 		elementTime = strconv.Itoa(int(db.SetsMap()["testSet"]["testSubSet"][0].time.Unix()))
 		assert.Equal(t, timeStr, elementTime)
 	})
