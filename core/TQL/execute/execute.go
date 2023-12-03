@@ -15,6 +15,9 @@ var Executors ExecutorMap = ExecutorMap{
 	"CLN":   database.IDataBase.CleanSets,
 	"CLNS":  database.IDataBase.CleanSet,
 	"CLNSS": database.IDataBase.CleanSubSet,
+	"CNTE":  database.IDataBase.CountElements,
+	"CNTS":  database.IDataBase.CountSets,
+	"CNTSS": database.IDataBase.CountSubSets,
 }
 
 func Execute(q database.Query, db database.IDataBase) string {

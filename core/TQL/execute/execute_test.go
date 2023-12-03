@@ -11,10 +11,9 @@ import (
 func TestExecute(t *testing.T) {
 	db := database.Init("../../../config/config.yaml")
 
-	query := "SET testSet"
-	q := core.ParseQuery(query)
-
+	q := core.ParseQuery("SET testSet")
 	eResult := Execute(q, db)
+
 	_, ok := db.SetsMap()["testSet"]
 
 	assert.Equal(t, "DONE", eResult)
