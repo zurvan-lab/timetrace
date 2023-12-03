@@ -198,3 +198,27 @@ func (db *Database) CountElements(args []string) string {
 
 	return fmt.Sprint(i)
 }
+
+func (db *Database) GetElements(args []string) string {
+	if len(args) < 2 {
+		return "INVALID"
+	}
+
+	subSet, ok := db.Sets[args[0]][args[1]]
+	if !ok {
+		return "SSNF"
+	}
+
+	if len(args) == 3 {
+		n, err := strconv.Atoi(args[2])
+		if err != nil || len(subSet) < n {
+			return "INVALID"
+		}
+
+		lastN := subSet[len(subSet)-n:]
+
+		return lastN.String()
+	}
+
+	return subSet.String()
+}

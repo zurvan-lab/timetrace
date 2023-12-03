@@ -14,4 +14,5 @@ type IDataBase interface {
 	CountSets([]string) string
 	CountSubSets([]string) string
 	CountElements([]string) string
+	GetElements([]string) string
 }
