@@ -2,6 +2,7 @@ package database
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/zurvan-lab/TimeTrace/config"
@@ -64,12 +65,14 @@ func (db *Database) PushElement(args []string) string {
 		return "SSNF"
 	}
 
-	t, err := time.Parse(time.UnixDate, timeStr)
+	timestamp, err := strconv.ParseInt(timeStr, 10, 64)
 	if err != nil {
 		return "INVALID"
 	}
 
+	t := time.Unix(timestamp, 0)
 	e := NewElement(elementValue, t)
+
 	db.Sets[setName][subSetName] = append(db.Sets[setName][subSetName], e)
 
 	return "DONE"
