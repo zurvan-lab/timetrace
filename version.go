@@ -21,10 +21,6 @@ var version = Version{
 	Meta:  "beta",
 }
 
-func Agent() string {
-	return fmt.Sprintf("timetrace/%s", StringVersion())
-}
-
 func StringVersion() string {
 	v := fmt.Sprintf("%d.%d.%d", version.Major, version.Minor, version.Patch)
 

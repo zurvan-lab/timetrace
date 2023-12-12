@@ -13,10 +13,10 @@ type Database struct {
 	Config *config.Config
 }
 
-func Init(path string) IDataBase {
+func Init(cfg *config.Config) IDataBase {
 	return &Database{
 		Sets:   make(Sets, 1024),
-		Config: config.LoadFromFile(path),
+		Config: cfg,
 	}
 }
 

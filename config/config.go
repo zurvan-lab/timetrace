@@ -3,19 +3,14 @@ package config
 import (
 	"bytes"
 	_ "embed"
-	"errors"
 	"os"
 
+	tte "github.com/zurvan-lab/TimeTrace/utils/errors"
 	"gopkg.in/yaml.v2"
 )
 
 //go:embed config.yaml
 var configBytes []byte
-
-var (
-	ErrInvalidUserLength               = errors.New("invalid user length")
-	ErrSpecificAndAllCommandSameAtTime = errors.New("can't have all cmds and specific cmd at same time")
-)
 
 type Config struct {
 	Name   string `yaml:"name"`
@@ -42,7 +37,7 @@ type User struct {
 
 func (conf *Config) BasicCheck() error {
 	if len(conf.Users) == 0 {
-		return ErrInvalidUserLength
+		return tte.ErrInvalidUsers
 	}
 
 	for _, u := range conf.Users {
@@ -55,7 +50,7 @@ func (conf *Config) BasicCheck() error {
 		}
 
 		if allCmds && len(u.Cmds) > 1 {
-			return ErrSpecificAndAllCommandSameAtTime
+			return tte.ErrSpecificAndAllCommandSameAtTime
 		}
 	}
 
@@ -85,10 +80,10 @@ func DefaultConfig() *Config {
 	return config
 }
 
-func LoadFromFile(path string) *Config {
+func LoadFromFile(path string) (*Config, error) {
 	file, err := os.Open(path)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	defer file.Close()
 
@@ -98,25 +93,25 @@ func LoadFromFile(path string) *Config {
 
 	err = decoder.Decode(&config)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	err = config.BasicCheck()
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
-	return config
+	return config, nil
 }
 
-func (conf *Config) ToYAML() []byte {
+func (conf *Config) ToYAML() ([]byte, error) {
 	buf := new(bytes.Buffer)
 	encoder := yaml.NewEncoder(buf)
 
 	err := encoder.Encode(conf)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
-	return buf.Bytes()
+	return buf.Bytes(), nil
 }
