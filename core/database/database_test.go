@@ -8,10 +8,11 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/zurvan-lab/TimeTrace/config"
 )
 
 func TestDataBase(t *testing.T) {
-	db := Init("../../config/config.yaml")
+	db := Init(config.DefaultConfig())
 
 	t.Run("addSetTest", func(t *testing.T) {
 		result := db.AddSet([]string{"testSet"})
