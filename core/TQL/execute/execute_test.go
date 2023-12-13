@@ -19,4 +19,9 @@ func TestExecute(t *testing.T) {
 
 	assert.Equal(t, "DONE", eResult)
 	assert.True(t, ok)
+
+	q2 := core.ParseQuery("CNTS")
+	eResult2 := Execute(q2, db)
+
+	assert.Equal(t, "1", eResult2)
 }
