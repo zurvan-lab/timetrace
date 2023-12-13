@@ -3,6 +3,7 @@ package database
 type IDataBase interface {
 	SetsMap() Sets
 
+	Connect([]string) string
 	AddSet([]string) string
 	AddSubSet([]string) string
 	PushElement([]string) string

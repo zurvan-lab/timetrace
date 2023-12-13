@@ -28,6 +28,25 @@ func (db *Database) SetsMap() Sets {
 }
 
 // ! TQL Commands.
+func (db *Database) Connect(args []string) string {
+	db.lk.RLock()
+	defer db.lk.RUnlock()
+
+	if len(args) != 2 {
+		return "INVALID"
+	}
+
+	for _, u := range db.Config.Users {
+		if u.Name == args[0] {
+			if u.Password == args[1] {
+				return "DONE"
+			}
+		}
+	}
+
+	return "INVALID"
+}
+
 func (db *Database) AddSet(args []string) string {
 	db.lk.Lock()
 	defer db.lk.Unlock()

@@ -86,6 +86,24 @@ func (s *Server) AcceptConnections() {
 			continue
 		}
 
+		buffer := make([]byte, 1024)
+
+		n, err := conn.Read(buffer)
+		if err != nil {
+			ttlogger.Error("error reading connection", "error", err, "db-name", s.Config.Name)
+
+			_ = conn.Close()
+		}
+
+		query := parser.ParseQuery(string(buffer[:n]))
+
+		result := execute.Execute(query, s.db)
+		if result != "DONE" {
+			ttlogger.Warn("invalid user try to connect", "db-name", s.Config.Name)
+
+			_ = conn.Close()
+		}
+
 		s.ActiveConnsMux.Lock()
 		s.ActiveConnections[conn] = struct{}{}
 		s.ActiveConnsMux.Unlock()
