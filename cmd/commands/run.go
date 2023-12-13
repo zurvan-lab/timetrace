@@ -4,6 +4,7 @@ import (
 	cobra "github.com/spf13/cobra"
 	"github.com/zurvan-lab/TimeTrace/config"
 	"github.com/zurvan-lab/TimeTrace/core/database"
+	"github.com/zurvan-lab/TimeTrace/core/server"
 	tte "github.com/zurvan-lab/TimeTrace/utils/errors"
 )
 
@@ -26,6 +27,11 @@ func RunCommand(parentCmd *cobra.Command) {
 			dead(cmd, err)
 		}
 
-		_ = database.Init(cfg)
+		db := database.Init(cfg)
+
+		server := server.NewServer(cfg, db)
+		if err := server.Start(); err != nil {
+			dead(cmd, err)
+		}
 	}
 }

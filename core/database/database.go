@@ -3,6 +3,7 @@ package database
 import (
 	"fmt"
 	"strconv"
+	"sync"
 	"time"
 
 	"github.com/zurvan-lab/TimeTrace/config"
@@ -11,9 +12,11 @@ import (
 type Database struct {
 	Sets   Sets
 	Config *config.Config
+
+	lk sync.RWMutex
 }
 
-func Init(cfg *config.Config) IDataBase {
+func Init(cfg *config.Config) *Database {
 	return &Database{
 		Sets:   make(Sets, 1024),
 		Config: cfg,
@@ -26,6 +29,9 @@ func (db *Database) SetsMap() Sets {
 
 // ! TQL Commands.
 func (db *Database) AddSet(args []string) string {
+	db.lk.Lock()
+	defer db.lk.Unlock()
+
 	if len(args) != 1 {
 		return "INVALID"
 	}
@@ -36,6 +42,9 @@ func (db *Database) AddSet(args []string) string {
 }
 
 func (db *Database) AddSubSet(args []string) string {
+	db.lk.Lock()
+	defer db.lk.Unlock()
+
 	if len(args) != 2 {
 		return "INVALID"
 	}
@@ -51,6 +60,9 @@ func (db *Database) AddSubSet(args []string) string {
 }
 
 func (db *Database) PushElement(args []string) string {
+	db.lk.Lock()
+	defer db.lk.Unlock()
+
 	if len(args) != 4 {
 		return "INVALID"
 	}
@@ -79,6 +91,9 @@ func (db *Database) PushElement(args []string) string {
 }
 
 func (db *Database) DropSet(args []string) string {
+	db.lk.Lock()
+	defer db.lk.Unlock()
+
 	if len(args) != 1 {
 		return "INVALID"
 	}
@@ -96,6 +111,9 @@ func (db *Database) DropSet(args []string) string {
 }
 
 func (db *Database) DropSubSet(args []string) string {
+	db.lk.Lock()
+	defer db.lk.Unlock()
+
 	if len(args) != 2 {
 		return "INVALID"
 	}
@@ -114,12 +132,18 @@ func (db *Database) DropSubSet(args []string) string {
 }
 
 func (db *Database) CleanSets(_ []string) string {
+	db.lk.Lock()
+	defer db.lk.Unlock()
+
 	db.Sets = make(Sets)
 
 	return "DONE"
 }
 
 func (db *Database) CleanSet(args []string) string {
+	db.lk.Lock()
+	defer db.lk.Unlock()
+
 	if len(args) != 1 {
 		return "INVALID"
 	}
@@ -137,6 +161,9 @@ func (db *Database) CleanSet(args []string) string {
 }
 
 func (db *Database) CleanSubSet(args []string) string {
+	db.lk.Lock()
+	defer db.lk.Unlock()
+
 	if len(args) != 2 {
 		return "INVALID"
 	}
@@ -154,7 +181,10 @@ func (db *Database) CleanSubSet(args []string) string {
 	return "DONE"
 }
 
-func (db *Database) CountSets(args []string) string {
+func (db *Database) CountSets(_ []string) string {
+	db.lk.RLock()
+	defer db.lk.RUnlock()
+
 	i := 0
 	for range db.Sets {
 		i++
@@ -164,6 +194,9 @@ func (db *Database) CountSets(args []string) string {
 }
 
 func (db *Database) CountSubSets(args []string) string {
+	db.lk.RLock()
+	defer db.lk.RUnlock()
+
 	if len(args) != 1 {
 		return "INVALID"
 	}
@@ -182,6 +215,9 @@ func (db *Database) CountSubSets(args []string) string {
 }
 
 func (db *Database) CountElements(args []string) string {
+	db.lk.RLock()
+	defer db.lk.RUnlock()
+
 	if len(args) != 2 {
 		return "INVALID"
 	}
@@ -200,6 +236,9 @@ func (db *Database) CountElements(args []string) string {
 }
 
 func (db *Database) GetElements(args []string) string {
+	db.lk.RLock()
+	defer db.lk.RUnlock()
+
 	if len(args) < 2 {
 		return "INVALID"
 	}

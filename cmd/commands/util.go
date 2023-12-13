@@ -7,6 +7,6 @@ import (
 )
 
 func dead(cmd *cobra.Command, err error) {
-	cmd.PrintErr(err)
+	cmd.PrintErrln(err)
 	os.Exit(1)
 }
