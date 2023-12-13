@@ -33,18 +33,18 @@ func (db *Database) Connect(args []string) string {
 	defer db.lk.RUnlock()
 
 	if len(args) != 2 {
-		return "INVALID"
+		return INVALID
 	}
 
 	for _, u := range db.Config.Users {
 		if u.Name == args[0] {
 			if u.Password == args[1] {
-				return "DONE"
+				return DONE
 			}
 		}
 	}
 
-	return "INVALID"
+	return INVALID
 }
 
 func (db *Database) AddSet(args []string) string {
@@ -52,12 +52,12 @@ func (db *Database) AddSet(args []string) string {
 	defer db.lk.Unlock()
 
 	if len(args) != 1 {
-		return "INVALID"
+		return INVALID
 	}
 
 	db.Sets[args[0]] = make(Set) // args[0] is set name. see: TQL docs.
 
-	return "DONE"
+	return DONE
 }
 
 func (db *Database) AddSubSet(args []string) string {
@@ -65,17 +65,17 @@ func (db *Database) AddSubSet(args []string) string {
 	defer db.lk.Unlock()
 
 	if len(args) != 2 {
-		return "INVALID"
+		return INVALID
 	}
 
 	s, ok := db.Sets[args[0]] // set name args[0]
 	if !ok {
-		return "SNF"
+		return SET_NOT_FOUND
 	}
 
 	s[args[1]] = make(SubSet, 0) // subset name args[1]
 
-	return "DONE"
+	return DONE
 }
 
 func (db *Database) PushElement(args []string) string {
@@ -83,7 +83,7 @@ func (db *Database) PushElement(args []string) string {
 	defer db.lk.Unlock()
 
 	if len(args) != 4 {
-		return "INVALID"
+		return INVALID
 	}
 
 	setName := args[0]
@@ -93,12 +93,12 @@ func (db *Database) PushElement(args []string) string {
 
 	_, ok := db.Sets[setName][subSetName]
 	if !ok {
-		return "SSNF"
+		return SUB_SET_NOT_FOUND
 	}
 
 	timestamp, err := strconv.ParseInt(timeStr, 10, 64)
 	if err != nil {
-		return "INVALID"
+		return INVALID
 	}
 
 	t := time.Unix(timestamp, 0)
@@ -106,7 +106,7 @@ func (db *Database) PushElement(args []string) string {
 
 	db.Sets[setName][subSetName] = append(db.Sets[setName][subSetName], e)
 
-	return "DONE"
+	return DONE
 }
 
 func (db *Database) DropSet(args []string) string {
@@ -114,19 +114,19 @@ func (db *Database) DropSet(args []string) string {
 	defer db.lk.Unlock()
 
 	if len(args) != 1 {
-		return "INVALID"
+		return INVALID
 	}
 
 	setName := args[0]
 	_, ok := db.Sets[setName]
 
 	if !ok {
-		return "SNF"
+		return SET_NOT_FOUND
 	}
 
 	delete(db.Sets, setName)
 
-	return "DONE"
+	return DONE
 }
 
 func (db *Database) DropSubSet(args []string) string {
@@ -134,7 +134,7 @@ func (db *Database) DropSubSet(args []string) string {
 	defer db.lk.Unlock()
 
 	if len(args) != 2 {
-		return "INVALID"
+		return INVALID
 	}
 
 	setName := args[0]
@@ -142,12 +142,12 @@ func (db *Database) DropSubSet(args []string) string {
 
 	_, ok := db.Sets[setName][subSetName]
 	if !ok {
-		return "SSNF"
+		return SUB_SET_NOT_FOUND
 	}
 
 	delete(db.Sets[setName], subSetName)
 
-	return "DONE"
+	return DONE
 }
 
 func (db *Database) CleanSets(_ []string) string {
@@ -156,7 +156,7 @@ func (db *Database) CleanSets(_ []string) string {
 
 	db.Sets = make(Sets)
 
-	return "DONE"
+	return DONE
 }
 
 func (db *Database) CleanSet(args []string) string {
@@ -164,19 +164,19 @@ func (db *Database) CleanSet(args []string) string {
 	defer db.lk.Unlock()
 
 	if len(args) != 1 {
-		return "INVALID"
+		return INVALID
 	}
 
 	setName := args[0]
 
 	_, ok := db.Sets[setName]
 	if !ok {
-		return "SNF"
+		return SET_NOT_FOUND
 	}
 
 	db.Sets[setName] = make(Set)
 
-	return "DONE"
+	return DONE
 }
 
 func (db *Database) CleanSubSet(args []string) string {
@@ -184,7 +184,7 @@ func (db *Database) CleanSubSet(args []string) string {
 	defer db.lk.Unlock()
 
 	if len(args) != 2 {
-		return "INVALID"
+		return INVALID
 	}
 
 	setName := args[0]
@@ -192,12 +192,12 @@ func (db *Database) CleanSubSet(args []string) string {
 
 	_, ok := db.Sets[setName][subSetName]
 	if !ok {
-		return "SSNF"
+		return SUB_SET_NOT_FOUND
 	}
 
 	db.Sets[setName][subSetName] = make(SubSet, 0)
 
-	return "DONE"
+	return DONE
 }
 
 func (db *Database) CountSets(_ []string) string {
@@ -217,12 +217,12 @@ func (db *Database) CountSubSets(args []string) string {
 	defer db.lk.RUnlock()
 
 	if len(args) != 1 {
-		return "INVALID"
+		return INVALID
 	}
 
 	set, ok := db.Sets[args[0]]
 	if !ok {
-		return "SNF"
+		return SET_NOT_FOUND
 	}
 
 	i := 0
@@ -238,12 +238,12 @@ func (db *Database) CountElements(args []string) string {
 	defer db.lk.RUnlock()
 
 	if len(args) != 2 {
-		return "INVALID"
+		return INVALID
 	}
 
 	subSet, ok := db.Sets[args[0]][args[1]]
 	if !ok {
-		return "SSNF"
+		return SUB_SET_NOT_FOUND
 	}
 
 	i := 0
@@ -259,18 +259,18 @@ func (db *Database) GetElements(args []string) string {
 	defer db.lk.RUnlock()
 
 	if len(args) < 2 {
-		return "INVALID"
+		return INVALID
 	}
 
 	subSet, ok := db.Sets[args[0]][args[1]]
 	if !ok {
-		return "SSNF"
+		return SUB_SET_NOT_FOUND
 	}
 
 	if len(args) == 3 {
 		n, err := strconv.Atoi(args[2])
 		if err != nil || len(subSet) < n {
-			return "INVALID"
+			return INVALID
 		}
 
 		lastN := subSet[len(subSet)-n:]

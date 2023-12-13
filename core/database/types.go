@@ -6,6 +6,14 @@ import (
 	"time"
 )
 
+const (
+	INVALID           = "INVALID"
+	DONE              = "DONE"
+	SET_NOT_FOUND     = "SNF"
+	SUB_SET_NOT_FOUND = "SSNF"
+	ELEMENT_NOT_FOUND = "ENF"
+)
+
 type Element struct {
 	value string    // currently ttrace only supports string datatype for value.
 	time  time.Time // will return and input from user as unix timestamp.
