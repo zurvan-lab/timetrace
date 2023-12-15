@@ -8,6 +8,7 @@ type ExecutorMap map[string]Executor
 
 var Executors ExecutorMap = ExecutorMap{
 	"SET":   database.IDataBase.AddSet,
+	"CON":   database.IDataBase.Connect,
 	"SSET":  database.IDataBase.AddSubSet,
 	"PUSH":  database.IDataBase.PushElement,
 	"DRPS":  database.IDataBase.DropSet,

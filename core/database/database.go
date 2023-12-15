@@ -37,10 +37,8 @@ func (db *Database) Connect(args []string) string {
 	}
 
 	for _, u := range db.Config.Users {
-		if u.Name == args[0] {
-			if u.Password == args[1] {
-				return DONE
-			}
+		if u.Name == args[0] && u.Password == args[1] {
+			return DONE
 		}
 	}
 

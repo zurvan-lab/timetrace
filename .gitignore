@@ -28,3 +28,4 @@ Thumbs.db
 
 # dev files
 cmd/config.yaml
+/client

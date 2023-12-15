@@ -44,7 +44,7 @@ func (s *Server) Start() error {
 	if err != nil {
 		return err
 	}
-	defer listener.Close()
+
 	s.Listener = listener
 
 	ttlogger.Info("server started", "address", s.ListenAddress, "db-name", s.Config.Name)
@@ -57,8 +57,7 @@ func (s *Server) Start() error {
 		ttlogger.Info("Received signal, shutting down...", "signal", sig, "db-name", s.Config.Name)
 
 		close(s.QuitChannel)
-
-		s.CloseAllConnections()
+		s.Stop()
 	}()
 
 	s.Wg.Add(1)
@@ -96,13 +95,18 @@ func (s *Server) AcceptConnections() {
 		}
 
 		query := parser.ParseQuery(string(buffer[:n]))
+		if query.Command != "CON" {
+			_ = conn.Close()
+		}
 
 		result := execute.Execute(query, s.db)
-		if result != "DONE" {
-			ttlogger.Warn("invalid user try to connect", "db-name", s.Config.Name)
+		if result != database.DONE {
+			ttlogger.Warn("invalid user try to connect", "db-name", s.Config.Name, "result", result)
 
 			_ = conn.Close()
 		}
+
+		_, _ = conn.Write([]byte(result))
 
 		s.ActiveConnsMux.Lock()
 		s.ActiveConnections[conn] = struct{}{}
@@ -111,11 +115,11 @@ func (s *Server) AcceptConnections() {
 		ttlogger.Info("new connection", "remote address", conn.RemoteAddr().String(), "db-name", s.Config.Name)
 
 		s.Wg.Add(1)
-		go s.ReadConneciton(conn)
+		go s.HandleConnection(conn)
 	}
 }
 
-func (s *Server) ReadConneciton(conn net.Conn) {
+func (s *Server) HandleConnection(conn net.Conn) {
 	defer conn.Close()
 	defer s.Wg.Done()
 
@@ -143,7 +147,7 @@ func (s *Server) ReadConneciton(conn net.Conn) {
 	}
 }
 
-func (s *Server) CloseAllConnections() {
+func (s *Server) Stop() {
 	s.ActiveConnsMux.Lock()
 	defer s.ActiveConnsMux.Unlock()
 
@@ -151,4 +155,6 @@ func (s *Server) CloseAllConnections() {
 		conn.Close()
 		delete(s.ActiveConnections, conn)
 	}
+
+	s.Listener.Close()
 }
