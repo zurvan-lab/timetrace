@@ -1,6 +1,7 @@
 package server
 
 import (
+	"errors"
 	"fmt"
 	"net"
 	"os"
@@ -15,12 +16,14 @@ import (
 	ttlogger "github.com/zurvan-lab/TimeTrace/log"
 )
 
+var ErrAuth = errors.New("authentication error")
+
 type Server struct {
 	ListenAddress     string
 	Listener          net.Listener
-	QuitChannel       chan struct{}
+	QuitChan          chan struct{}
 	Wg                sync.WaitGroup
-	ActiveConnections map[net.Conn]struct{}
+	ActiveConnections map[net.Conn]*config.User
 	ActiveConnsMux    sync.Mutex
 	Config            *config.Config
 
@@ -32,8 +35,8 @@ func NewServer(cfg *config.Config, db *database.Database) *Server {
 
 	return &Server{
 		ListenAddress:     lna,
-		QuitChannel:       make(chan struct{}),
-		ActiveConnections: make(map[net.Conn]struct{}),
+		QuitChan:          make(chan struct{}),
+		ActiveConnections: make(map[net.Conn]*config.User),
 		db:                db,
 		Config:            cfg,
 	}
@@ -44,7 +47,7 @@ func (s *Server) Start() error {
 	if err != nil {
 		return err
 	}
-	defer listener.Close()
+
 	s.Listener = listener
 
 	ttlogger.Info("server started", "address", s.ListenAddress, "db-name", s.Config.Name)
@@ -56,15 +59,14 @@ func (s *Server) Start() error {
 		sig := <-signalChan
 		ttlogger.Info("Received signal, shutting down...", "signal", sig, "db-name", s.Config.Name)
 
-		close(s.QuitChannel)
-
-		s.CloseAllConnections()
+		close(s.QuitChan)
+		s.Stop()
 	}()
 
 	s.Wg.Add(1)
 	go s.AcceptConnections()
 
-	<-s.QuitChannel
+	<-s.QuitChan
 
 	return nil
 }
@@ -74,7 +76,7 @@ func (s *Server) AcceptConnections() {
 
 	for {
 		select {
-		case <-s.QuitChannel:
+		case <-s.QuitChan:
 			return
 		default:
 		}
@@ -86,42 +88,31 @@ func (s *Server) AcceptConnections() {
 			continue
 		}
 
-		buffer := make([]byte, 1024)
-
-		n, err := conn.Read(buffer)
+		user, err := s.Authenticate(conn)
 		if err != nil {
-			ttlogger.Error("error reading connection", "error", err, "db-name", s.Config.Name)
-
-			_ = conn.Close()
-		}
-
-		query := parser.ParseQuery(string(buffer[:n]))
-
-		result := execute.Execute(query, s.db)
-		if result != "DONE" {
 			ttlogger.Warn("invalid user try to connect", "db-name", s.Config.Name)
+		} else {
+			s.ActiveConnsMux.Lock()
+			s.ActiveConnections[conn] = user
+			s.ActiveConnsMux.Unlock()
 
-			_ = conn.Close()
+			ttlogger.Info("new connection", "remote address", conn.RemoteAddr().String(), "db-name", s.Config.Name)
+
+			s.Wg.Add(1)
+			go s.HandleConnection(conn)
 		}
-
-		s.ActiveConnsMux.Lock()
-		s.ActiveConnections[conn] = struct{}{}
-		s.ActiveConnsMux.Unlock()
-
-		ttlogger.Info("new connection", "remote address", conn.RemoteAddr().String(), "db-name", s.Config.Name)
-
-		s.Wg.Add(1)
-		go s.ReadConneciton(conn)
 	}
 }
 
-func (s *Server) ReadConneciton(conn net.Conn) {
+func (s *Server) HandleConnection(conn net.Conn) {
 	defer conn.Close()
 	defer s.Wg.Done()
 
 	buffer := make([]byte, 2050)
 
 	for {
+		user := s.ActiveConnections[conn]
+
 		n, err := conn.Read(buffer)
 		if err != nil {
 			ttlogger.Error("Connection closed", "remote address", conn.RemoteAddr().String(), "db-name", s.Config.Name)
@@ -134,16 +125,75 @@ func (s *Server) ReadConneciton(conn net.Conn) {
 		}
 
 		query := parser.ParseQuery(string(buffer[:n]))
-		result := execute.Execute(query, s.db)
 
-		_, err = conn.Write([]byte(result))
-		if err != nil {
-			ttlogger.Error("Can't write on TCP connection", "error", err, "db-name", s.Config.Name)
+		access := s.HaveAccess(*user, query.Command)
+		if access {
+			result := execute.Execute(query, s.db)
+
+			_, err = conn.Write([]byte(result))
+			if err != nil {
+				ttlogger.Error("Can't write on TCP connection", "error", err, "db-name", s.Config.Name)
+			}
+		} else {
+			_, _ = conn.Write([]byte(database.INVALID))
 		}
 	}
 }
 
-func (s *Server) CloseAllConnections() {
+func (s *Server) Authenticate(conn net.Conn) (*config.User, error) {
+	buffer := make([]byte, 1024)
+
+	n, err := conn.Read(buffer)
+	if err != nil {
+		ttlogger.Error("error reading connection", "error", err, "db-name", s.Config.Name)
+
+		_ = conn.Close()
+	}
+
+	query := parser.ParseQuery(string(buffer[:n]))
+	if query.Command != "CON" {
+		_ = conn.Close()
+
+		return nil, ErrAuth
+	}
+
+	result := execute.Execute(query, s.db)
+	if result != database.DONE {
+		_ = conn.Close()
+
+		return nil, ErrAuth
+	}
+
+	_, _ = conn.Write([]byte(result))
+
+	var user *config.User
+
+	for _, u := range s.Config.Users {
+		if u.Name == query.Args[0] {
+			user = &u
+		}
+	}
+
+	return user, nil
+}
+
+func (s *Server) HaveAccess(user config.User, command string) bool {
+	access := false
+
+	for _, c := range user.Cmds {
+		if c == command {
+			access = true
+		}
+	}
+
+	if user.Cmds[0] == "*" {
+		access = true
+	}
+
+	return access
+}
+
+func (s *Server) Stop() {
 	s.ActiveConnsMux.Lock()
 	defer s.ActiveConnsMux.Unlock()
 
@@ -151,4 +201,6 @@ func (s *Server) CloseAllConnections() {
 		conn.Close()
 		delete(s.ActiveConnections, conn)
 	}
+
+	s.Listener.Close()
 }
