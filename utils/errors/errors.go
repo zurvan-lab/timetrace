@@ -8,6 +8,6 @@ var (
 	ErrInvalidUsers                    = errors.New("invalid user(s)")
 	ErrSpecificAndAllCommandSameAtTime = errors.New("can't have all cmds and specific cmd at same time")
 
-	// server
+	// server.
 	ErrAuth = errors.New("authentication error")
 )
