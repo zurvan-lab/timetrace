@@ -5,8 +5,12 @@ server:
   port: "7070"
 
 log:
-  write_to_file: true
   path: log.ttrace
+  colorful: true
+  compress: true
+  max_age: 1
+  max_backups: 10
+  max_log_size: 10
 
 users:
 - name: root
