@@ -1,7 +1,6 @@
 package server
 
 import (
-	"errors"
 	"fmt"
 	"net"
 	"os"
@@ -14,9 +13,8 @@ import (
 	parser "github.com/zurvan-lab/TimeTrace/core/TQL/parser"
 	"github.com/zurvan-lab/TimeTrace/core/database"
 	ttlogger "github.com/zurvan-lab/TimeTrace/log"
+	"github.com/zurvan-lab/TimeTrace/utils/errors"
 )
-
-var ErrAuth = errors.New("authentication error")
 
 type Server struct {
 	ListenAddress     string
@@ -154,14 +152,14 @@ func (s *Server) Authenticate(conn net.Conn) (*config.User, error) {
 	if query.Command != "CON" {
 		_ = conn.Close()
 
-		return nil, ErrAuth
+		return nil, errors.ErrAuth
 	}
 
 	result := execute.Execute(query, s.db)
 	if result != database.DONE {
 		_ = conn.Close()
 
-		return nil, ErrAuth
+		return nil, errors.ErrAuth
 	}
 
 	_, _ = conn.Write([]byte(result))
