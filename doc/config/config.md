@@ -30,14 +30,18 @@ server:
 
 #### log
 
-This part will help you to config log stuff (levels, saving path and...).
+This part will help you to config log stuff (saving path, max size and...).
 
 How it looks in `config.yaml`:
 
 ```yml
 log:
-  write_to_file: true
-  path: log.ttrace
+  path: log.ttrace 
+  colorful: true # should logs be colorful in terminal?
+  compress: true # should log file backups be compressed?
+  max_age: 1 # in day. (max age of log backup and files)
+  max_backups: 10 
+  max_log_size: 10
 ```
 
 #### users
