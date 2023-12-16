@@ -25,8 +25,12 @@ type Server struct {
 }
 
 type Log struct {
-	WriteToFile bool   `yaml:"write_to_file"`
-	Path        string `yaml:"path"`
+	Path       string `yaml:"path"`
+	Colorful   bool   `yaml:"colorful"`
+	Compress   bool   `yaml:"compress"`
+	MaxAge     int    `yaml:"max_age"`
+	MaxBackups int    `yaml:"max_backups"`
+	MaxLogSize int    `yaml:"max_log_size"`
 }
 
 type User struct {
@@ -64,8 +68,12 @@ func DefaultConfig() *Config {
 			Port: "7070",
 		},
 		Log: Log{
-			WriteToFile: true,
-			Path:        "log.ttrace",
+			Colorful:   true,
+			Compress:   true,
+			MaxAge:     1,
+			MaxBackups: 10,
+			MaxLogSize: 10,
+			Path:       "log.ttrace",
 		},
 		Name: "time_trace",
 	}

@@ -6,6 +6,7 @@ import (
 	"github.com/zurvan-lab/TimeTrace/core/database"
 	"github.com/zurvan-lab/TimeTrace/core/server"
 	tte "github.com/zurvan-lab/TimeTrace/utils/errors"
+	ttlog "github.com/zurvan-lab/TimeTrace/utils/log"
 )
 
 func RunCommand(parentCmd *cobra.Command) {
@@ -28,6 +29,7 @@ func RunCommand(parentCmd *cobra.Command) {
 		}
 
 		db := database.Init(cfg)
+		ttlog.InitGlobalLogger(&cfg.Log)
 
 		server := server.NewServer(cfg, db)
 		if err := server.Start(); err != nil {

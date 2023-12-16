@@ -12,8 +12,8 @@ import (
 	"github.com/zurvan-lab/TimeTrace/core/TQL/execute"
 	parser "github.com/zurvan-lab/TimeTrace/core/TQL/parser"
 	"github.com/zurvan-lab/TimeTrace/core/database"
-	ttlogger "github.com/zurvan-lab/TimeTrace/log"
 	"github.com/zurvan-lab/TimeTrace/utils/errors"
+	ttlogger "github.com/zurvan-lab/TimeTrace/utils/log"
 )
 
 type Server struct {
@@ -25,11 +25,13 @@ type Server struct {
 	ActiveConnsMux    sync.Mutex
 	Config            *config.Config
 
-	db *database.Database
+	logger *ttlogger.SubLogger
+	db     *database.Database
 }
 
 func NewServer(cfg *config.Config, db *database.Database) *Server {
 	lna := fmt.Sprintf("%v:%v", cfg.Server.IP, cfg.Server.Port)
+	sLogger := ttlogger.NewSubLogger("server")
 
 	return &Server{
 		ListenAddress:     lna,
@@ -37,6 +39,7 @@ func NewServer(cfg *config.Config, db *database.Database) *Server {
 		ActiveConnections: make(map[net.Conn]*config.User),
 		db:                db,
 		Config:            cfg,
+		logger:            sLogger,
 	}
 }
 
@@ -48,14 +51,14 @@ func (s *Server) Start() error {
 
 	s.Listener = listener
 
-	ttlogger.Info("server started", "address", s.ListenAddress, "db-name", s.Config.Name)
+	s.logger.Info("server started", "address", s.ListenAddress, "db-name", s.Config.Name)
 
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
 
 	go func() {
 		sig := <-signalChan
-		ttlogger.Info("Received signal, shutting down...", "signal", sig, "db-name", s.Config.Name)
+		s.logger.Info("Received signal, shutting down...", "signal", sig, "db-name", s.Config.Name)
 
 		close(s.QuitChan)
 		s.Stop()
@@ -81,20 +84,20 @@ func (s *Server) AcceptConnections() {
 
 		conn, err := s.Listener.Accept()
 		if err != nil {
-			ttlogger.Error("error accepting connection", "error", err, "db-name", s.Config.Name)
+			s.logger.Error("error accepting connection", "error", err, "db-name", s.Config.Name)
 
 			continue
 		}
 
 		user, err := s.Authenticate(conn)
 		if err != nil {
-			ttlogger.Warn("invalid user try to connect", "db-name", s.Config.Name)
+			s.logger.Warn("invalid user try to connect", "db-name", s.Config.Name)
 		} else {
 			s.ActiveConnsMux.Lock()
 			s.ActiveConnections[conn] = user
 			s.ActiveConnsMux.Unlock()
 
-			ttlogger.Info("new connection", "remote address", conn.RemoteAddr().String(), "db-name", s.Config.Name)
+			s.logger.Info("new connection", "remote address", conn.RemoteAddr().String(), "db-name", s.Config.Name)
 
 			s.Wg.Add(1)
 			go s.HandleConnection(conn)
@@ -113,7 +116,7 @@ func (s *Server) HandleConnection(conn net.Conn) {
 
 		n, err := conn.Read(buffer)
 		if err != nil {
-			ttlogger.Error("Connection closed", "remote address", conn.RemoteAddr().String(), "db-name", s.Config.Name)
+			s.logger.Error("Connection closed", "remote address", conn.RemoteAddr().String(), "db-name", s.Config.Name)
 
 			s.ActiveConnsMux.Lock()
 			delete(s.ActiveConnections, conn)
@@ -130,7 +133,7 @@ func (s *Server) HandleConnection(conn net.Conn) {
 
 			_, err = conn.Write([]byte(result))
 			if err != nil {
-				ttlogger.Error("Can't write on TCP connection", "error", err, "db-name", s.Config.Name)
+				s.logger.Error("Can't write on TCP connection", "error", err, "db-name", s.Config.Name)
 			}
 		} else {
 			_, _ = conn.Write([]byte(database.INVALID))
@@ -143,7 +146,7 @@ func (s *Server) Authenticate(conn net.Conn) (*config.User, error) {
 
 	n, err := conn.Read(buffer)
 	if err != nil {
-		ttlogger.Error("error reading connection", "error", err, "db-name", s.Config.Name)
+		s.logger.Error("error reading connection", "error", err, "db-name", s.Config.Name)
 
 		_ = conn.Close()
 	}
