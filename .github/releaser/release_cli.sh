@@ -31,7 +31,7 @@ for OS_ARCH in \
         EXE=".exe"
     fi
 
-    CGO_ENABLED=0 GOOS=${OS} GOARCH=${ARCH} go build -ldflags "-s -w" -trimpath -o ${BUILD_DIR}/${PACKAGE_NAME}/ttrace${EXE} cmd/mian.go
+    CGO_ENABLED=0 GOOS=${OS} GOARCH=${ARCH} go build -ldflags "-s -w" -trimpath -o ${BUILD_DIR}/${PACKAGE_NAME}/ttrace${EXE} ./cmd
 
     cd ${BUILD_DIR}
     if [ $OS = "windows" ]; then
