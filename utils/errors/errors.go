@@ -10,4 +10,7 @@ var (
 
 	// server.
 	ErrAuth = errors.New("authentication error")
+
+	// CLI.
+	ErrInvalidUserOrPassword = errors.New("user or user information you provided is invalid")
 )

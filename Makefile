@@ -6,6 +6,10 @@ devtools:
 	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.54.1
 	go install mvdan.cc/gofumpt@latest
 
+## Building
+build-cli:
+	go build -o ./build/ttrace ./cmd/main.go
+
 ### Testing
 unit_test:
 	go test $(PACKAGES)

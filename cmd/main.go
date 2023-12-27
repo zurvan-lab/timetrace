@@ -8,11 +8,12 @@ import (
 
 func main() {
 	rootCmd := &cobra.Command{
-		Use:     "time-trace",
+		Use:     "ttrace",
 		Version: timetrace.StringVersion(),
 	}
 
 	commands.RunCommand(rootCmd)
+	commands.REPLCommand(rootCmd)
 
 	err := rootCmd.Execute()
 	if err != nil {
