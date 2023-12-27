@@ -14,9 +14,10 @@ func main() {
 
 	commands.RunCommand(rootCmd)
 	commands.REPLCommand(rootCmd)
+	commands.PingCommand(rootCmd)
 
 	err := rootCmd.Execute()
 	if err != nil {
-		panic(err)
+		commands.Dead(rootCmd, err)
 	}
 }

@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func dead(cmd *cobra.Command, err error) {
+func Dead(cmd *cobra.Command, err error) {
 	cmd.PrintErrln(err)
 	os.Exit(1)
 }

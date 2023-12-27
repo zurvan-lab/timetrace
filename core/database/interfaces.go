@@ -4,6 +4,7 @@ type IDataBase interface {
 	SetsMap() Sets
 
 	Connect([]string) string
+	Ping([]string) string
 	AddSet([]string) string
 	AddSubSet([]string) string
 	PushElement([]string) string

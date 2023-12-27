@@ -28,7 +28,7 @@ func REPLCommand(parentCmd *cobra.Command) {
 	connect.Run = func(cmd *cobra.Command, args []string) {
 		conn, err := net.Dial("tcp", *address)
 		if err != nil {
-			dead(cmd, err)
+			Dead(cmd, err)
 		}
 		defer conn.Close()
 
@@ -51,7 +51,7 @@ func REPLCommand(parentCmd *cobra.Command) {
 				cmd.Print(do(conn, input))
 			}
 		} else {
-			dead(cmd, errors.New(response)) //nolint
+			Dead(cmd, errors.New(response)) //nolint
 		}
 	}
 }
