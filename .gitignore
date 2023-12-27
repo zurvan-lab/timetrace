@@ -30,3 +30,4 @@ Thumbs.db
 cmd/config.yaml
 /client
 log.ttrace
+build/
