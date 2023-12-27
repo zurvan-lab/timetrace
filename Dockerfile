@@ -5,7 +5,7 @@ ADD . /ttrace
 
 # Building ttrace-cli
 RUN cd /ttrace && \
-    go build -ldflags "-s -w" -trimpath -o ./build/ttrace ./cmd/main.go
+    go build -ldflags "-s -w" -trimpath -o ./build/ttrace ./cmd
 
 
 ## Copy binary files from builder into second container
