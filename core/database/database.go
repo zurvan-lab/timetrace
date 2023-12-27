@@ -45,6 +45,10 @@ func (db *Database) Connect(args []string) string {
 	return INVALID
 }
 
+func (db *Database) Ping(_ []string) string {
+	return PONG
+}
+
 func (db *Database) AddSet(args []string) string {
 	db.Lock()
 	defer db.Unlock()

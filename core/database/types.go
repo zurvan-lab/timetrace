@@ -9,6 +9,7 @@ import (
 const (
 	INVALID           = "INVALID"
 	DONE              = "DONE"
+	PONG              = "PONG"
 	SET_NOT_FOUND     = "SNF"
 	SUB_SET_NOT_FOUND = "SSNF"
 	ELEMENT_NOT_FOUND = "ENF"

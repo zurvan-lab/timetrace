@@ -20,12 +20,12 @@ func RunCommand(parentCmd *cobra.Command) {
 
 	run.Run = func(cmd *cobra.Command, args []string) {
 		if confingPath == nil || *confingPath == "" {
-			dead(cmd, tte.ErrInavlidConfigPath)
+			Dead(cmd, tte.ErrInavlidConfigPath)
 		}
 
 		cfg, err := config.LoadFromFile(*confingPath)
 		if err != nil {
-			dead(cmd, err)
+			Dead(cmd, err)
 		}
 
 		db := database.Init(cfg)
@@ -33,7 +33,7 @@ func RunCommand(parentCmd *cobra.Command) {
 
 		server := server.NewServer(cfg, db)
 		if err := server.Start(); err != nil {
-			dead(cmd, err)
+			Dead(cmd, err)
 		}
 	}
 }

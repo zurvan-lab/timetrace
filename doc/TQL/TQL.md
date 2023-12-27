@@ -9,7 +9,8 @@ Time trace is using a query language called TQL. Here is documentation and speci
 
 | Command   |      Action      |  Arguments |
 |----------|:-------------|:------|
-| CON |  to make a connection and access to database | username - password |
+| CON * |  to make a connection and access to database | username - password |
+| PING * |  should send a `PONG` back if everything is ok |  |
 | SET * |    make a new set   | set-name |
 | SSET * | make a new subset | set-name - subset-name |
 | PUSH * | push an element to a subset | set-name - subset-name - value-of-element - time(unix-timestamp) |

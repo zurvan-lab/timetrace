@@ -1,0 +1,69 @@
+name: Releaser
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  ########################################
+  build-cli:
+    runs-on: ubuntu-latest
+
+    # Defining outputs for jobs
+    # https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs
+    outputs:
+      checksums: ${{ steps.calc_checksums.outputs.checksums }}
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Dependencies
+      run: |
+        sudo apt update
+        sudo apt install zip
+
+    - name: Install Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.21.1
+
+    - name: Create release files
+      run: bash ./.github/releasers/releaser_cli.sh
+
+    # Multiline strings in GitHub actions
+    # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
+    - name: Calculate sha256sum
+      id: calc_checksums
+      run: |
+        set -e
+        EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+        echo "checksums<<$EOF"                          >> "$GITHUB_OUTPUT"
+        echo "$(sha256sum pactus-*.zip pactus-*tar.gz)" >> "$GITHUB_OUTPUT"
+        echo "$EOF"                                     >> "$GITHUB_OUTPUT"
+
+    - name: Publish
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          pactus-*.zip
+          pactus-*.tar.gz
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+ 
+  checksums:
+    needs: [build-cli]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Create SHA256SUMS file
+      run: |
+        echo "${{ needs.build-cli.outputs.checksums }}" >> SHA256SUMS
+    - name: Publish
+      uses: softprops/action-gh-release@v1
+      with:
+        files: SHA256SUMS
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
