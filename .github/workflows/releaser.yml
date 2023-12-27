@@ -53,6 +53,7 @@ jobs:
 
  
   checksums:
+    permissions: write-all
     needs: [build-cli]
     runs-on: ubuntu-latest
     steps:
