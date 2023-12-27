@@ -39,15 +39,15 @@ jobs:
         set -e
         EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
         echo "checksums<<$EOF"                          >> "$GITHUB_OUTPUT"
-        echo "$(sha256sum pactus-*.zip pactus-*tar.gz)" >> "$GITHUB_OUTPUT"
+        echo "$(sha256sum timetrace-*.zip timetrace-*tar.gz)" >> "$GITHUB_OUTPUT"
         echo "$EOF"                                     >> "$GITHUB_OUTPUT"
 
     - name: Publish
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          pactus-*.zip
-          pactus-*.tar.gz
+          timetrace-*.zip
+          timetrace-*.tar.gz
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
