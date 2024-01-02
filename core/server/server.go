@@ -159,7 +159,7 @@ func (s *Server) Authenticate(conn net.Conn) (*config.User, error) {
 	}
 
 	result := execute.Execute(query, s.db)
-	if result != database.DONE {
+	if result != database.OK {
 		_ = conn.Close()
 
 		return nil, errors.ErrAuth

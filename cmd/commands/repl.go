@@ -35,7 +35,7 @@ func REPLCommand(parentCmd *cobra.Command) {
 		conQuery := fmt.Sprintf("CON %v %v", *username, *password)
 
 		response := do(conn, conQuery)
-		if response == "DONE" {
+		if response == "OK" {
 			reader := bufio.NewReader(os.Stdin)
 
 			for {
