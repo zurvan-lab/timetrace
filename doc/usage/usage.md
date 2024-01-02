@@ -37,7 +37,7 @@ ttrace connect -u username -p password -a remote-address
 
 ## other commands
 
-Checl ttrace `--help` to find-out more commands.
+Check ttrace `--help` to find-out more commands.
 
 ## other usage ways
 
