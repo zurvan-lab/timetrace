@@ -18,7 +18,7 @@ func TestDataBase(t *testing.T) {
 		result := db.AddSet([]string{"testSet"})
 
 		assert.Equal(t, 1, len(db.SetsMap()))
-		assert.Equal(t, DONE, result)
+		assert.Equal(t, OK, result)
 	})
 
 	t.Run("AddSubSetTest", func(t *testing.T) {
@@ -26,7 +26,7 @@ func TestDataBase(t *testing.T) {
 		result := db.AddSubSet([]string{"testSet", "testSubSet"})
 
 		assert.Equal(t, 0, len(db.SetsMap()["testSet"]["testSubSet"]))
-		assert.Equal(t, DONE, result)
+		assert.Equal(t, OK, result)
 
 		result = db.AddSubSet([]string{"testInvalidSet", "testSubSet"})
 
@@ -40,7 +40,7 @@ func TestDataBase(t *testing.T) {
 		timeStr := fmt.Sprintf("%d", time.Now().Unix())
 		result := db.PushElement([]string{"testSet", "testSubSet", "testValue", timeStr})
 
-		assert.Equal(t, DONE, result)
+		assert.Equal(t, OK, result)
 		assert.Equal(t, 1, len(db.SetsMap()["testSet"]["testSubSet"]))
 		assert.Equal(t, "testValue", db.SetsMap()["testSet"]["testSubSet"][0].value)
 
@@ -65,7 +65,7 @@ func TestDataBase(t *testing.T) {
 		result := db.DropSet([]string{"testSet"})
 
 		assert.Equal(t, 2, len(db.SetsMap()))
-		assert.Equal(t, DONE, result)
+		assert.Equal(t, OK, result)
 
 		result = db.DropSet([]string{"inavlidTestSet"})
 
@@ -82,7 +82,7 @@ func TestDataBase(t *testing.T) {
 
 		result := db.DropSubSet([]string{"testSet", "subSetOne"})
 
-		assert.Equal(t, DONE, result)
+		assert.Equal(t, OK, result)
 		assert.Equal(t, 1, len(db.SetsMap()["testSet"]))
 		assert.Nil(t, db.SetsMap()["testSet"]["subSetOne"])
 
@@ -111,17 +111,17 @@ func TestDataBase(t *testing.T) {
 
 		result := db.CleanSubSet([]string{"secondTestSet", "subSetTwo"})
 
-		assert.Equal(t, DONE, result)
+		assert.Equal(t, OK, result)
 		assert.Equal(t, 0, len(db.SetsMap()["secondTestSet"]["subSetTwo"]))
 
 		result = db.CleanSet([]string{"testSet"})
 
-		assert.Equal(t, DONE, result)
+		assert.Equal(t, OK, result)
 		assert.Equal(t, 0, len(db.SetsMap()["testSet"]))
 
 		result = db.CleanSets([]string{})
 
-		assert.Equal(t, DONE, result)
+		assert.Equal(t, OK, result)
 		assert.Equal(t, 0, len(db.SetsMap()))
 
 		result = db.CleanSet([]string{"invalidSet"})

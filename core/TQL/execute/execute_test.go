@@ -17,7 +17,7 @@ func TestExecute(t *testing.T) {
 
 	_, ok := db.SetsMap()["testSet"]
 
-	assert.Equal(t, "DONE", eResult)
+	assert.Equal(t, "OK", eResult)
 	assert.True(t, ok)
 
 	q2 := core.ParseQuery("CNTS")

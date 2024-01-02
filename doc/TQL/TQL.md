@@ -30,7 +30,7 @@ Time trace is using a query language called TQL. Here is documentation and speci
 
 | Message   |      reason      | 
 |----------|:-------------|
-| DONE | everything is ok |
+| OK | everything is OK |
 | INVALID | invalid user and password to make a connection OR not enough args for a command |
 | SNF | set is not found |
 | SSNF | subset is not found |

@@ -8,7 +8,7 @@ import (
 
 const (
 	INVALID           = "INVALID"
-	DONE              = "DONE"
+	OK                = "OK"
 	PONG              = "PONG"
 	SET_NOT_FOUND     = "SNF"
 	SUB_SET_NOT_FOUND = "SSNF"
