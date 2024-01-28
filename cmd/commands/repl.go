@@ -2,7 +2,6 @@ package commands
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"net"
 	"os"
@@ -10,6 +9,7 @@ import (
 	"time"
 
 	cobra "github.com/spf13/cobra"
+	"github.com/zurvan-lab/TimeTrace/utils/errors"
 )
 
 const PROMPT = "\n>> "
@@ -51,15 +51,20 @@ func REPLCommand(parentCmd *cobra.Command) {
 				cmd.Print(do(conn, input))
 			}
 		} else {
-			Dead(cmd, errors.New(response)) //nolint
+			Dead(cmd, fmt.Errorf("%w: %s", errors.ErrInvalidCommand, response))
 		}
 	}
 }
 
 func do(conn net.Conn, q string) string {
 	resBuf := make([]byte, 1024)
+	query := []byte(q)
 
-	_, err := conn.Write([]byte(q))
+	if len(query) < 1 {
+		return "INVALID"
+	}
+
+	_, err := conn.Write(query)
 	if err != nil {
 		return err.Error()
 	}

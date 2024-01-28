@@ -8,20 +8,10 @@ import (
 
 // parsing TQL queries. see: docs/TQL.
 func ParseQuery(query string) database.Query {
-	command := ""
-	args := []string{}
+	q := strings.Split(query, " ")
 
-	for _, word := range strings.Split(query, " ") {
-		if word == "" {
-			continue
-		}
-
-		if command != "" {
-			args = append(args, word)
-		} else {
-			command = word
-		}
+	return database.Query{
+		Command: q[0],
+		Args:    q[1:],
 	}
-
-	return database.Query{Command: command, Args: args}
 }
