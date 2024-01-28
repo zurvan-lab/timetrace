@@ -13,4 +13,5 @@ var (
 
 	// CLI.
 	ErrInvalidUserOrPassword = errors.New("user or user information you provided is invalid")
+	ErrInvalidCommand        = errors.New("invalid command")
 )
