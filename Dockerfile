@@ -1,4 +1,4 @@
-FROM golang:1.21.5-alpine3.18 as builder
+FROM golang:1.22rc2-alpine3.18 as builder
 
 RUN apk add --no-cache git gmp-dev build-base g++ openssl-dev
 ADD . /ttrace
@@ -9,7 +9,7 @@ RUN cd /ttrace && \
 
 
 ## Copy binary files from builder into second container
-FROM golang:1.21.5-alpine3.18
+FROM golang:1.22rc2-alpine3.18
 
 COPY --from=builder /timetrace/build/ttrace /usr/bin
 
