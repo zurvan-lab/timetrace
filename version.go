@@ -1,10 +1,6 @@
 package timetracedb
 
-import (
-	"encoding/json"
-	"encoding/xml"
-	"fmt"
-)
+import "fmt"
 
 // These constants follow the semantic versioning 2.0.0 spec (http://semver.org/)
 type Version struct {
@@ -29,22 +25,4 @@ func StringVersion() string {
 	}
 
 	return v
-}
-
-func JSONVersion() (string, error) {
-	v, err := json.Marshal(version)
-	if err != nil {
-		return "", err
-	}
-
-	return string(v), nil
-}
-
-func XMLVersion() (string, error) {
-	v, err := xml.MarshalIndent(version, "", " ")
-	if err != nil {
-		return "", err
-	}
-
-	return string(v), nil
 }
