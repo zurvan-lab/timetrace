@@ -70,7 +70,7 @@ func DefaultConfig() *Config {
 			Port: "7070",
 		},
 		Log: Log{
-			Targets:    []string{"console", "file"},
+			Targets:    []string{"file", "console"},
 			Level:      "debug",
 			Colorful:   true,
 			Compress:   true,

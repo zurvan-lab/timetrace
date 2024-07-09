@@ -34,8 +34,6 @@ func TestDefaultConfig(t *testing.T) {
 	defaultYaml = strings.ReplaceAll(defaultYaml, "\n\n", "\n")
 	defaultFunctionStr = strings.ReplaceAll(defaultFunctionStr, "\n\n", "\n")
 
-	// fmt.Println(defaultFunction)
-	// fmt.Println(defaultYaml)
 	assert.Equal(t, defaultFunctionStr, defaultYaml)
 }
 

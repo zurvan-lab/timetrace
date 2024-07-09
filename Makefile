@@ -7,7 +7,7 @@ devtools:
 	go install mvdan.cc/gofumpt@latest
 
 ## Building
-build:
+build-cli:
 	go build -o ./build/ttrace ./cmd/main.go
 
 ### Testing
