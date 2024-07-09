@@ -5,7 +5,10 @@ server:
   port: "7070"
 
 log:
+  enabled: true
   path: log.ttrace
+  targets: [file, console]
+  level: debug
   colorful: true
   compress: true
   max_age: 1

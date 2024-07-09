@@ -25,12 +25,15 @@ type Server struct {
 }
 
 type Log struct {
-	Path       string `yaml:"path"`
-	Colorful   bool   `yaml:"colorful"`
-	Compress   bool   `yaml:"compress"`
-	MaxAge     int    `yaml:"max_age"`
-	MaxBackups int    `yaml:"max_backups"`
-	MaxLogSize int    `yaml:"max_log_size"`
+	Enabled    bool     `yaml:"enabled"`
+	Path       string   `yaml:"path"`
+	Targets    []string `yaml:"targets"`
+	Level      string   `yaml:"level"`
+	Colorful   bool     `yaml:"colorful"`
+	Compress   bool     `yaml:"compress"`
+	MaxAge     int      `yaml:"max_age"`
+	MaxBackups int      `yaml:"max_backups"`
+	MaxLogSize int      `yaml:"max_log_size"`
 }
 
 type User struct {
@@ -58,6 +61,10 @@ func (conf *Config) BasicCheck() error {
 		}
 	}
 
+	if conf.Log.Enabled && len(conf.Log.Targets) == 0 {
+		return tte.ErrEmptyLogTarget
+	}
+
 	return nil
 }
 
@@ -68,6 +75,9 @@ func DefaultConfig() *Config {
 			Port: "7070",
 		},
 		Log: Log{
+			Enabled:    true,
+			Targets:    []string{"console", "file"},
+			Level:      "debug",
 			Colorful:   true,
 			Compress:   true,
 			MaxAge:     1,
