@@ -26,7 +26,7 @@ var Executors ExecutorMap = ExecutorMap{
 func Execute(q database.Query, db database.IDataBase) string {
 	execute, ok := Executors[q.Command]
 	if !ok {
-		return "INVALID"
+		return database.INVALID
 	}
 
 	result := execute(db, q.Args)

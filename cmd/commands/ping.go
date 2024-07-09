@@ -22,7 +22,7 @@ func PingCommand(parentCmd *cobra.Command) {
 	ping.Run = func(cmd *cobra.Command, args []string) {
 		conn, err := net.Dial("tcp", *address)
 		if err != nil {
-			Dead(cmd, err)
+			ExitOnError(cmd, err)
 		}
 		defer conn.Close()
 
