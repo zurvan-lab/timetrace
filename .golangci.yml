@@ -7,7 +7,6 @@ linters:
     - staticcheck
     - unused
     - gocognit
-    - godox
     - godot
     - gocritic
     - wsl

@@ -1,20 +1,56 @@
 package commands
 
 import (
-	"bufio"
+	_ "embed"
 	"fmt"
 	"net"
 	"os"
-	"strings"
+	"os/exec"
+	"runtime"
 	"time"
 
+	"github.com/peterh/liner"
 	cobra "github.com/spf13/cobra"
 	"github.com/zurvan-lab/TimeTrace/utils/errors"
 )
 
-const PROMPT = "\n>> "
+/*
+	TODO: Add history support for me.
+	TODO: Add suggestion for me.
+	TODO: Add completer for me.
+*/
 
-func REPLCommand(parentCmd *cobra.Command) {
+func init() {
+	clear = make(map[string]func())
+	clear["linux"] = func() {
+		cmd := exec.Command("clear")
+		cmd.Stdout = os.Stdout
+		_ = cmd.Run()
+	}
+	clear["windows"] = func() {
+		cmd := exec.Command("cmd", "/c", "cls")
+		cmd.Stdout = os.Stdout
+		_ = cmd.Run()
+	}
+}
+
+var (
+	//go:embed ttrace.txt
+	welcomeASCII []byte
+
+	TQL_COMMANDS = [...]string{
+		"CON", "PING", "SET", "SSET", "PUSH", "GET", "CNTS",
+		"CNTSS", "CNTE", "CLN", "CLNS", "CLNSS", "DRPS", "DRPSS", "SS",
+	}
+
+	clear map[string]func()
+)
+
+const (
+	PROMPT = ">> "
+)
+
+func ConnectCommand(parentCmd *cobra.Command) {
 	connect := &cobra.Command{
 		Use:   "connect",
 		Short: "Connects you to a time trace instance and you can interact with it in a REPL interface.",
@@ -32,23 +68,31 @@ func REPLCommand(parentCmd *cobra.Command) {
 		}
 		defer conn.Close()
 
-		conQuery := fmt.Sprintf("CON %v %v", *username, *password)
+		lnr := liner.NewLiner()
+		defer lnr.Close()
 
+		lnr.SetCtrlCAborts(true)
+
+		conQuery := fmt.Sprintf("CON %v %v", *username, *password)
 		response := do(conn, conQuery)
+
 		if response == "OK" {
-			reader := bufio.NewReader(os.Stdin)
+			cleanTerminal()
+			cmd.Println(string(welcomeASCII))
 
 			for {
-				fmt.Print(PROMPT)
+				if input, _ := lnr.Prompt(PROMPT); err == nil {
+					if input == "exit" {
+						os.Exit(0)
+					}
 
-				input, _ := reader.ReadString('\n')
-				input = strings.TrimSuffix(input, "\n")
+					if input == "clean" {
+						cleanTerminal()
+					}
 
-				if input == "exit" {
-					break
+					lnr.AppendHistory(input)
+					cmd.Print(fmt.Sprintf("%s\n", do(conn, input)))
 				}
-
-				cmd.Print(do(conn, input))
 			}
 		} else {
 			ExitOnError(cmd, fmt.Errorf("%w: %s", errors.ErrInvalidCommand, response))
@@ -77,4 +121,11 @@ func do(conn net.Conn, q string) string {
 	}
 
 	return string(resBuf[:n])
+}
+
+func cleanTerminal() {
+	cf, ok := clear[runtime.GOOS]
+	if ok {
+		cf()
+	}
 }

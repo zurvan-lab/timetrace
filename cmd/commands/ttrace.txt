@@ -1,0 +1,11 @@
+888888 888888 88""Yb    db     dP""b8 888888 
+  88     88   88__dP   dPYb   dP   `" 88__   
+  88     88   88"Yb   dP__Yb  Yb      88""   
+  88     88   88  Yb dP""""Yb  YboodP 888888 
+
+Welcome to time-trace REPL!
+You can execute TQL command and apply changes to connected instance here.
+see: https://github.com/zurvan-lab/TimeTrace/blob/main/doc/TQL/TQL.md
+
+You can clean the screen using clean command.
+Use exit to exit the REPL gracefully.
