@@ -1,11 +1,11 @@
 module github.com/zurvan-lab/TimeTrace
 
-go 1.21.1
+go 1.22.2
 
 require (
-	github.com/rs/zerolog v1.31.0
+	github.com/rs/zerolog v1.32.0
 	github.com/spf13/cobra v1.8.0
-	github.com/stretchr/testify v1.8.4
+	github.com/stretchr/testify v1.9.0
 	gopkg.in/yaml.v2 v2.4.0
 )
 

@@ -18,6 +18,6 @@ func main() {
 
 	err := rootCmd.Execute()
 	if err != nil {
-		commands.Dead(rootCmd, err)
+		commands.ExitOnError(rootCmd, err)
 	}
 }

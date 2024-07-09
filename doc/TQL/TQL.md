@@ -36,3 +36,16 @@ Time trace is using a query language called TQL. Here is documentation and speci
 | SSNF | subset is not found |
 | ENF | element(s) is not found |
 | [DATA separated by space] (key-time key-time key-time) | GET successful response |
+
+
+# Example
+
+Here is a set of examples to understand TQL and idea behind it:
+
+E1:
+```
+SET  myset
+SSET myset mysset
+PUSH myset mysset hello 123456789
+GET  myset mysset 1
+```
