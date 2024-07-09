@@ -25,12 +25,14 @@ type Server struct {
 }
 
 type Log struct {
-	Path       string `yaml:"path"`
-	Colorful   bool   `yaml:"colorful"`
-	Compress   bool   `yaml:"compress"`
-	MaxAge     int    `yaml:"max_age"`
-	MaxBackups int    `yaml:"max_backups"`
-	MaxLogSize int    `yaml:"max_log_size"`
+	Path       string   `yaml:"path"`
+	Targets    []string `yaml:"targets"`
+	Level      string   `yaml:"level"`
+	Colorful   bool     `yaml:"colorful"`
+	Compress   bool     `yaml:"compress"`
+	MaxAge     int      `yaml:"max_age"`
+	MaxBackups int      `yaml:"max_backups"`
+	MaxLogSize int      `yaml:"max_log_size"`
 }
 
 type User struct {
@@ -68,6 +70,8 @@ func DefaultConfig() *Config {
 			Port: "7070",
 		},
 		Log: Log{
+			Targets:    []string{"file", "console"},
+			Level:      "debug",
 			Colorful:   true,
 			Compress:   true,
 			MaxAge:     1,

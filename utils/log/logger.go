@@ -6,6 +6,8 @@ import (
 	"io"
 	"os"
 	"reflect"
+	"slices"
+	"strings"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -16,55 +18,39 @@ import (
 var globalInst *logger
 
 type logger struct {
-	config *config.Log
-	subs   map[string]*SubLogger
 	writer io.Writer
-}
-
-type SubLogger struct {
-	logger zerolog.Logger
-	name   string
-}
-
-func getLoggersInst() *logger {
-	if globalInst == nil {
-		conf := &config.Log{
-			Colorful: true,
-		}
-		globalInst = &logger{
-			config: conf,
-			subs:   make(map[string]*SubLogger),
-			writer: zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: "15:04:05"},
-		}
-		log.Logger = zerolog.New(globalInst.writer).With().Timestamp().Logger()
-	}
-
-	return globalInst
 }
 
 func InitGlobalLogger(cfg *config.Log) {
 	if globalInst == nil {
 		writers := []io.Writer{}
-		if cfg.Colorful {
-			writers = append(writers, zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: "15:04:05"})
-		} else {
-			writers = append(writers, os.Stderr)
+
+		if slices.Contains(cfg.Targets, "file") {
+			// File writer.
+			fw := &lumberjack.Logger{
+				Filename:   cfg.Path,
+				MaxSize:    cfg.MaxLogSize,
+				MaxBackups: cfg.MaxBackups,
+				Compress:   cfg.Compress,
+			}
+			writers = append(writers, fw)
 		}
 
-		fw := &lumberjack.Logger{
-			Filename:   cfg.Path,
-			MaxSize:    cfg.MaxLogSize,
-			MaxBackups: cfg.MaxBackups,
-			Compress:   cfg.Compress,
-			MaxAge:     cfg.MaxAge,
+		if slices.Contains(cfg.Targets, "console") {
+			// Console writer.
+			writers = append(writers, zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: "15:04:05"})
 		}
-		writers = append(writers, fw)
 
 		globalInst = &logger{
-			config: cfg,
-			subs:   make(map[string]*SubLogger),
 			writer: io.MultiWriter(writers...),
 		}
+
+		level, err := zerolog.ParseLevel(strings.ToLower(cfg.Level))
+		if err != nil {
+			level = zerolog.InfoLevel
+		}
+
+		zerolog.SetGlobalLevel(level)
 		log.Logger = zerolog.New(globalInst.writer).With().Timestamp().Logger()
 	}
 }
@@ -79,7 +65,7 @@ func addFields(event *zerolog.Event, keyvals ...interface{}) *zerolog.Event {
 		if !ok {
 			key = "!INVALID-KEY!"
 		}
-		///
+
 		value := keyvals[i+1]
 		switch v := value.(type) {
 		case fmt.Stringer:
@@ -100,48 +86,32 @@ func addFields(event *zerolog.Event, keyvals ...interface{}) *zerolog.Event {
 	return event
 }
 
-func NewSubLogger(name string) *SubLogger {
-	inst := getLoggersInst()
-	sl := &SubLogger{
-		logger: zerolog.New(inst.writer).With().Timestamp().Logger(),
-		name:   name,
-	}
-
-	inst.subs[name] = sl
-
-	return sl
+func Trace(msg string, keyvals ...interface{}) {
+	addFields(log.Trace(), keyvals...).Msg(msg)
 }
 
-func (sl *SubLogger) logObj(event *zerolog.Event, msg string, keyvals ...interface{}) {
-	addFields(event, keyvals...).Msg(msg)
+func Debug(msg string, keyvals ...interface{}) {
+	addFields(log.Debug(), keyvals...).Msg(msg)
 }
 
-func (sl *SubLogger) Trace(msg string, keyvals ...interface{}) {
-	sl.logObj(sl.logger.Trace(), msg, keyvals...)
+func Info(msg string, keyvals ...interface{}) {
+	addFields(log.Info(), keyvals...).Msg(msg)
 }
 
-func (sl *SubLogger) Debug(msg string, keyvals ...interface{}) {
-	sl.logObj(sl.logger.Debug(), msg, keyvals...)
+func Warn(msg string, keyvals ...interface{}) {
+	addFields(log.Warn(), keyvals...).Msg(msg)
 }
 
-func (sl *SubLogger) Info(msg string, keyvals ...interface{}) {
-	sl.logObj(sl.logger.Info(), msg, keyvals...)
+func Error(msg string, keyvals ...interface{}) {
+	addFields(log.Error(), keyvals...).Msg(msg)
 }
 
-func (sl *SubLogger) Warn(msg string, keyvals ...interface{}) {
-	sl.logObj(sl.logger.Warn(), msg, keyvals...)
+func Fatal(msg string, keyvals ...interface{}) {
+	addFields(log.Fatal(), keyvals...).Msg(msg)
 }
 
-func (sl *SubLogger) Error(msg string, keyvals ...interface{}) {
-	sl.logObj(sl.logger.Error(), msg, keyvals...)
-}
-
-func (sl *SubLogger) Fatal(msg string, keyvals ...interface{}) {
-	sl.logObj(sl.logger.Fatal(), msg, keyvals...)
-}
-
-func (sl *SubLogger) Panic(msg string, keyvals ...interface{}) {
-	sl.logObj(sl.logger.Panic(), msg, keyvals...)
+func Panic(msg string, keyvals ...interface{}) {
+	addFields(log.Panic(), keyvals...).Msg(msg)
 }
 
 func isNil(i interface{}) bool {

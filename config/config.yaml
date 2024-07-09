@@ -6,6 +6,10 @@ server:
 
 log:
   path: log.ttrace
+  targets:
+  - file
+  - console
+  level: debug
   colorful: true
   compress: true
   max_age: 1
