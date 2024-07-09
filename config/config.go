@@ -25,7 +25,6 @@ type Server struct {
 }
 
 type Log struct {
-	Enabled    bool     `yaml:"enabled"`
 	Path       string   `yaml:"path"`
 	Targets    []string `yaml:"targets"`
 	Level      string   `yaml:"level"`
@@ -61,10 +60,6 @@ func (conf *Config) BasicCheck() error {
 		}
 	}
 
-	if conf.Log.Enabled && len(conf.Log.Targets) == 0 {
-		return tte.ErrEmptyLogTarget
-	}
-
 	return nil
 }
 
@@ -75,7 +70,6 @@ func DefaultConfig() *Config {
 			Port: "7070",
 		},
 		Log: Log{
-			Enabled:    true,
 			Targets:    []string{"console", "file"},
 			Level:      "debug",
 			Colorful:   true,

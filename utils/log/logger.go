@@ -65,7 +65,7 @@ func addFields(event *zerolog.Event, keyvals ...interface{}) *zerolog.Event {
 		if !ok {
 			key = "!INVALID-KEY!"
 		}
-		///
+
 		value := keyvals[i+1]
 		switch v := value.(type) {
 		case fmt.Stringer:
