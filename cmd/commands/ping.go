@@ -35,8 +35,7 @@ func PingCommand(parentCmd *cobra.Command) {
 			cmd.Println("PONG, everything is ok.")
 			os.Exit(0)
 		} else {
-			cmd.Printf("something is wrong: %v", response)
-			os.Exit(1)
+			ExitOnError(cmd, fmt.Errorf("something went wrong: %v", response))
 		}
 	}
 }
