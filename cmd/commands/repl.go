@@ -6,9 +6,7 @@ import (
 	"net"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"runtime"
-	"strings"
 	"time"
 
 	"github.com/peterh/liner"
@@ -16,19 +14,11 @@ import (
 	"github.com/zurvan-lab/TimeTrace/utils/errors"
 )
 
-var (
-	//go:embed ttrace.txt
-	welcomeASCII []byte
-
-	history = filepath.Join(os.TempDir(), ".time_trace_repl_history")
-
-	TQL_COMMANDS = [...]string{
-		"CON", "PING", "SET", "SSET", "PUSH", "GET", "CNTS",
-		"CNTSS", "CNTE", "CLN", "CLNS", "CLNSS", "DRPS", "DRPSS", "SS",
-	}
-
-	clear map[string]func()
-)
+/*
+	TODO: Add history support for me.
+	TODO: Add suggestion for me.
+	TODO: Add completer for me.
+*/
 
 func init() {
 	clear = make(map[string]func())
@@ -43,6 +33,18 @@ func init() {
 		_ = cmd.Run()
 	}
 }
+
+var (
+	//go:embed ttrace.txt
+	welcomeASCII []byte
+
+	TQL_COMMANDS = [...]string{
+		"CON", "PING", "SET", "SSET", "PUSH", "GET", "CNTS",
+		"CNTSS", "CNTE", "CLN", "CLNS", "CLNSS", "DRPS", "DRPSS", "SS",
+	}
+
+	clear map[string]func()
+)
 
 const (
 	PROMPT = ">> "
@@ -70,12 +72,6 @@ func ConnectCommand(parentCmd *cobra.Command) {
 		defer lnr.Close()
 
 		lnr.SetCtrlCAborts(true)
-		lnr.SetCompleter(completer)
-
-		if f, err := os.Open(history); err == nil {
-			_, _ = lnr.ReadHistory(f)
-			f.Close()
-		}
 
 		conQuery := fmt.Sprintf("CON %v %v", *username, *password)
 		response := do(conn, conQuery)
@@ -90,19 +86,16 @@ func ConnectCommand(parentCmd *cobra.Command) {
 						os.Exit(0)
 					}
 
+					if input == "clean" {
+						cleanTerminal()
+					}
+
 					lnr.AppendHistory(input)
 					cmd.Print(fmt.Sprintf("%s\n", do(conn, input)))
 				}
 			}
 		} else {
 			ExitOnError(cmd, fmt.Errorf("%w: %s", errors.ErrInvalidCommand, response))
-		}
-
-		if f, err := os.Create(history); err != nil {
-			cmd.Printf("Error writing history file: %s\n", err)
-		} else {
-			_, _ = lnr.WriteHistory(f)
-			f.Close()
 		}
 	}
 }
@@ -128,18 +121,6 @@ func do(conn net.Conn, q string) string {
 	}
 
 	return string(resBuf[:n])
-}
-
-func completer(line string) []string {
-	r := make([]string, 15)
-
-	for _, c := range TQL_COMMANDS {
-		if strings.Contains(c, line) {
-			r = append(r, c)
-		}
-	}
-
-	return r
 }
 
 func cleanTerminal() {

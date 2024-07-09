@@ -7,4 +7,5 @@ Welcome to time-trace REPL!
 You can execute TQL command and apply changes to connected instance here.
 see: https://github.com/zurvan-lab/TimeTrace/blob/main/doc/TQL/TQL.md
 
-use exit to exit the repl gracefully.
+You can clean the screen using clean command.
+Use exit to exit the REPL gracefully.
