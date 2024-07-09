@@ -13,7 +13,7 @@ func main() {
 	}
 
 	commands.RunCommand(rootCmd)
-	commands.REPLCommand(rootCmd)
+	commands.ConnectCommand(rootCmd)
 	commands.PingCommand(rootCmd)
 	commands.InitCommand(rootCmd)
 
