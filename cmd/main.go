@@ -15,6 +15,7 @@ func main() {
 	commands.RunCommand(rootCmd)
 	commands.REPLCommand(rootCmd)
 	commands.PingCommand(rootCmd)
+	commands.InitCommand(rootCmd)
 
 	err := rootCmd.Execute()
 	if err != nil {

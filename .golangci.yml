@@ -14,7 +14,6 @@ linters:
     - containedctx
     - contextcheck
     - exhaustive
-    - goerr113
     - wastedassign
     - nonamedreturns
     - nlreturn

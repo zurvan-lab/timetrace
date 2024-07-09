@@ -165,6 +165,7 @@ func TestDataBase(t *testing.T) {
 
 		time := time.Now()
 		timeStr := strconv.Itoa(int(time.Unix()))
+
 		for i := 0; i < 50; i++ {
 			db.PushElement([]string{"testSet", "subSetOne", "testValue", timeStr})
 		}
