@@ -113,7 +113,7 @@ func (s *Server) HandleConnection(conn net.Conn) {
 
 		n, err := conn.Read(buffer)
 		if err != nil {
-			ttlogger.Error("Connection closed", "remote address", conn.RemoteAddr().String(), "db-name", s.Config.Name)
+			ttlogger.Info("Connection closed", "remote address", conn.RemoteAddr().String(), "db-name", s.Config.Name)
 
 			s.ActiveConnsMux.Lock()
 			delete(s.ActiveConnections, conn)

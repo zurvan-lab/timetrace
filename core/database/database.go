@@ -206,12 +206,7 @@ func (db *Database) CountSets(_ []string) string {
 	db.RLock()
 	defer db.RUnlock()
 
-	i := 0
-	for range db.Sets {
-		i++
-	}
-
-	return fmt.Sprint(i)
+	return fmt.Sprint(len(db.Sets))
 }
 
 func (db *Database) CountSubSets(args []string) string {
@@ -222,17 +217,12 @@ func (db *Database) CountSubSets(args []string) string {
 		return INVALID
 	}
 
-	set, ok := db.Sets[args[0]]
+	subSet, ok := db.Sets[args[0]]
 	if !ok {
 		return SET_NOT_FOUND
 	}
 
-	i := 0
-	for range set {
-		i++
-	}
-
-	return fmt.Sprint(i)
+	return fmt.Sprint(len(subSet))
 }
 
 func (db *Database) CountElements(args []string) string {
@@ -243,17 +233,12 @@ func (db *Database) CountElements(args []string) string {
 		return INVALID
 	}
 
-	subSet, ok := db.Sets[args[0]][args[1]]
+	elms, ok := db.Sets[args[0]][args[1]]
 	if !ok {
 		return SUB_SET_NOT_FOUND
 	}
 
-	i := 0
-	for range subSet {
-		i++
-	}
-
-	return fmt.Sprint(i)
+	return fmt.Sprint(len(elms))
 }
 
 func (db *Database) GetElements(args []string) string {
