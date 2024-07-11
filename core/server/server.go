@@ -124,8 +124,7 @@ func (s *Server) HandleConnection(conn net.Conn) {
 
 		query := parser.ParseQuery(string(buffer[:n]))
 
-		access := s.HaveAccess(*user, query.Command)
-		if access {
+		if user.HasAccess(query.Command) {
 			result := execute.Execute(query, s.db)
 
 			_, err = conn.Write([]byte(result))
@@ -173,22 +172,6 @@ func (s *Server) Authenticate(conn net.Conn) (*config.User, error) {
 	}
 
 	return user, nil
-}
-
-func (s *Server) HaveAccess(user config.User, command string) bool {
-	access := false
-
-	for _, c := range user.Cmds {
-		if c == command {
-			access = true
-		}
-	}
-
-	if user.Cmds[0] == "*" {
-		access = true
-	}
-
-	return access
 }
 
 func (s *Server) Stop() {
