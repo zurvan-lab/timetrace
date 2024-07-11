@@ -4,6 +4,7 @@ import (
 	"bytes"
 	_ "embed"
 	"os"
+	"slices"
 
 	tte "github.com/zurvan-lab/TimeTrace/utils/errors"
 	"gopkg.in/yaml.v2"
@@ -126,4 +127,12 @@ func (conf *Config) ToYAML() ([]byte, error) {
 	}
 
 	return buf.Bytes(), nil
+}
+
+func (u *User) HasAccess(c string) bool {
+	if u.Cmds[0] == "*" {
+		return true
+	}
+
+	return slices.Contains(u.Cmds, c)
 }
