@@ -35,8 +35,8 @@ func PingCommand(parentCmd *cobra.Command) {
 		details := ""
 
 		t := time.Now()
-
 		response := do(conn, "PING")
+
 		if *verbose {
 			details = fmt.Sprintf("It toked %v to get the response", time.Since(t).Abs().String())
 		}
