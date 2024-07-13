@@ -7,7 +7,6 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
-	"time"
 
 	"github.com/peterh/liner"
 	cobra "github.com/spf13/cobra"
@@ -98,29 +97,6 @@ func ConnectCommand(parentCmd *cobra.Command) {
 			ExitOnError(cmd, fmt.Errorf("%w: %s", errors.ErrInvalidCommand, response))
 		}
 	}
-}
-
-func do(conn net.Conn, q string) string {
-	resBuf := make([]byte, 1024)
-	query := []byte(q)
-
-	if len(query) < 1 {
-		return "INVALID"
-	}
-
-	_, err := conn.Write(query)
-	if err != nil {
-		return err.Error()
-	}
-
-	time.Sleep(time.Second * 1)
-
-	n, err := conn.Read(resBuf)
-	if err != nil {
-		return err.Error()
-	}
-
-	return string(resBuf[:n])
 }
 
 func cleanTerminal() {
