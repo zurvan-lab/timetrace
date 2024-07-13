@@ -32,19 +32,20 @@ func PingCommand(parentCmd *cobra.Command) {
 
 		do(conn, conQuery)
 
-		verb := ""
+		details := ""
 
-		t1 := time.Now()
+		t := time.Now()
+
 		response := do(conn, "PING")
 		if *verbose {
-			verb = fmt.Sprintf("It toked %v to get the response", time.Since(t1).Abs().String())
+			details = fmt.Sprintf("It toked %v to get the response", time.Since(t).Abs().String())
 		}
 
 		if response == "PONG" {
-			cmd.Printf("PONG, everything is ok.\n%s\n", verb)
+			cmd.Printf("PONG, everything is ok.\n%s\n", details)
 			os.Exit(0)
 		} else {
-			ExitOnError(cmd, fmt.Errorf("something went wrong: %v\n%s", response, verb))
+			ExitOnError(cmd, fmt.Errorf("something went wrong: %v\n%s", response, details))
 		}
 	}
 }
