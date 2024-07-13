@@ -14,6 +14,7 @@ func ExitOnError(cmd *cobra.Command, err error) {
 
 func do(conn net.Conn, q string) string {
 	resBuf := make([]byte, 1024)
+
 	query := []byte(q)
 
 	if len(query) < 1 {
