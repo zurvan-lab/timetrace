@@ -18,7 +18,7 @@ Time trace is using a query language called TQL. Here is documentation and speci
 | CNTS * | returns count of sets |  |
 | CNTSS * | returns count of subsets | set-name |
 | CNTE * | returns count of elements | set-name - subset-name |
-| CLN * | cleans all database sets (the sets themselves) | set-name - subset-name |
+| CLN * | cleans all database sets (the sets themselves) | |
 | CLNS * | cleans all sub-sets of a set | set-name |
 | CLNSS * | cleans all elements of a subset | set-name - subset-name |
 | DRPS * | drops a set | set-name |

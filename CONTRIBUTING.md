@@ -1,11 +1,11 @@
 # Contributing
 
-Thank you for considering contributing to go-TimeTraceDB!
+Thank you for considering contributing to TimeTrace!
 Please read these guidelines before submitting a pull request or opening an issue.
 
 ## Code guidelines
 
-We strive to maintain clean, readable, and maintainable code in go-TimeTraceDB.
+We strive to maintain clean, readable, and maintainable code in TimeTrace.
 Please follow these guidelines when contributing code to the project:
 
 - Code should follow the [Effective Go](https://golang.org/doc/effective_go.html) guidelines.
@@ -23,6 +23,8 @@ The following commands are available in the Makefile:
 - `make fmt` formats the code according to the Go standards.
 - `make check` runs various checks on the code, including formatting and linting.
 - `make test` runs the tests to ensure that all functionality is working as intended.
+
+All golang and [python](./test/README.md) must be passed.
 
 ## Commit guidelines
 
@@ -55,4 +57,4 @@ Please read it before contributing to the project.
 
 ---
 
-Thank you for your contributions to go-TimeTraceDB!
+Thank you for your contributions to TimeTrace!
