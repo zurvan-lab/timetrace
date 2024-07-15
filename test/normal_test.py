@@ -39,7 +39,7 @@ def test_ping_ok():
 def test_new_set_ok():
     #* Creating some random sets.
     for i in range(10):
-        set_names.append(utils.get_random_string(i+2))
+        set_names.append(utils.get_random_string_name(i+2))
 
         query = f"SET {set_names[i]}"
         response = utils.make_query(query, sock)
@@ -52,7 +52,7 @@ def test_new_sub_set_ok():
     #* Creating some random sub sets.
     for s in set_names:
         for i in range(7):
-            sub_set_names.append(utils.get_random_string(i+2))
+            sub_set_names.append(utils.get_random_string_name(i+2))
 
             query = f"SSET {s} {sub_set_names[i]}"
             response = utils.make_query(query, sock)
@@ -67,7 +67,7 @@ def test_push_element_ok():
     for s in set_names:
         for i in range(7):
             for _ in range(1_000):
-                element_value = utils.get_random_string(i+8)
+                element_value = utils.get_random_string_name(i+8)
                 elements_value.append(element_value)
 
                 query = f"PUSH {s} {sub_set_names[i]} {element_value} {int(time.mktime(time.gmtime()))}"

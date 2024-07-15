@@ -31,3 +31,6 @@ cmd/config.yaml
 /client
 log.ttrace
 build/
+
+# python cache files
+test/__pycache__
