@@ -6,6 +6,7 @@ import random
 #! GET method is not tested here now.
 # TODO: writing test for method GET.
 # TODO: adding test bad cases such as invalid set/subset name.
+# TODO: popping items from global variables while dropping or cleaning them(?)
 
 st = time.time()
 
@@ -20,36 +21,52 @@ server_address = ('localhost', 7070) #! You can change port and host for testing
 sock.connect(server_address)
 
 def test_connect_ok():
-    #* TQL command to connect to the server.
+    """
+    Connecting to database and creating a session.
+    Testing: CON TQL command
+    Error: null
+    """
     query = "CON root super_secret_password" #! Considers you config is default.
     response = utils.make_query(query, sock)
 
-    assert response == "OK", f"\033[91mCan't connect to server with correct info, received {response}, expected OK\033[0m"
+    assert response == "OK", f"\033[91mCan't connect to server with default info, received: {response}, expected: OK\033[0m"
 
     print(f"\033[32mReceived response: {response}, Connection test Passed.\033[32m")
 
 def test_ping_ok():
-    #* Ping database.
+    """
+    Ping the database to check session health.
+    Testing: PING TQL command
+    Error: null
+    """
     response = utils.make_query("PING", sock)
 
-    assert response == "PONG", f"\033[91mCan't ping the database, received {response}, expected PONG\033[0m"
+    assert response == "PONG", f"\033[91mCan't ping the database, received: {response}, expected: PONG\033[0m"
 
-    print(f"\033[32mReceived response: {response}, We are connected!\033[32m")
+    print(f"\033[32mReceived response: {response}, we are connected!\033[32m")
 
 def test_new_set_ok():
-    #* Creating some random sets.
+    """
+    Creating random sets.
+    Testing: SET TQL command
+    Error: null
+    """
     for i in range(10):
         set_names.append(utils.get_random_string_name(i+2))
 
         query = f"SET {set_names[i]}"
         response = utils.make_query(query, sock)
 
-        assert response == "OK", f"\033[91mCan't create set {set_names[i]}, received {response}, expected OK\033[0m"
+        assert response == "OK", f"\033[91mCan't create set: {set_names[i]}, received: {response}, expected: OK\033[0m"
 
-    print(f"\033[32mReceived response: {response}, Created {len(set_names)} sets successfully.\033[32m")
+    print(f"\033[32mReceived response: {response}, {len(set_names)} sets created successfully.\nSets: {set_names}\033[32m")
 
 def test_new_sub_set_ok():
-    #* Creating some random sub sets.
+    """
+    Creating random subsets for sets.
+    Testing: SSET command
+    Error: null
+    """
     for s in set_names:
         for i in range(7):
             sub_set_names.append(utils.get_random_string_name(i+2))
@@ -57,38 +74,53 @@ def test_new_sub_set_ok():
             query = f"SSET {s} {sub_set_names[i]}"
             response = utils.make_query(query, sock)
 
-            assert response == "OK", f"\033[91mCan't create sub set {sub_set_names[i]}, received {response}, expected OK\033[0m"
+            assert response == "OK", f"\033[91mCan't create subset: {sub_set_names[i]} in set {s}, received: {response}, expected: OK\033[0m"
 
-    print(f"\033[32mReceived response: {response}, Created {len(sub_set_names)} sub sets successfully.\033[32m")
+    print(f"\033[32mReceived response: {response}, {len(sub_set_names)} subsets created successfully.\nSubsets: {sub_set_names}\033[32m")
 
 def test_push_element_ok():
-    #* Pushing some random elements.
+    """
+    Pushing randomly generated elements in all created subsets.
+    Testing: PUSH TQL command
+    Error: null
+    """
     set_index = 0
+
     for s in set_names:
         for i in range(7):
             for _ in range(1_000):
                 element_value = utils.get_random_string_name(i+8)
                 elements_value.append(element_value)
 
-                query = f"PUSH {s} {sub_set_names[i]} {element_value} {int(time.mktime(time.gmtime()))}"
+                element_time = int(time.mktime(time.gmtime()))
+                query = f"PUSH {s} {sub_set_names[i]} {element_value} {element_time}"
                 response = utils.make_query(query, sock)
 
-                assert response == "OK", f"\033[91mCan't push element {elements_value[i]}, received {response}, expected OK\033[0m"
+                assert response == "OK", f"\033[91mCan't push element with value of: {elements_value[i]} and time of: {element_time}, received: {response}, expected: OK\033[0m"
 
         set_index += 7
 
-    print(f"\033[32mReceived response: {response}, Created {len(elements_value)} elements pushed successfully.\033[32m")
+    #? Change `elements_value[:10]` to get more or less elements.
+    print(f"\033[32mReceived response: {response}, {len(elements_value)} elements pushed successfully.\nElements: {elements_value[:10]}\033[32m")
 
 def test_count_sets_ok():
-    #* Test counting sets
+    """
+    Counting all sets.
+    Testing: CNTS TQL command
+    Error: null
+    """
     response = utils.make_query("CNTS", sock)
 
-    assert response == str(len(set_names)), f"\033[91mCan't count sets, received {response}, expected {len(set_names)}\033[0m"
+    assert response == str(len(set_names)), f"\033[91mCan't count sets, received: {response}, expected: {len(set_names)}\033[0m"
 
-    print(f"\033[32mReceived response: {response}, Sets number counted successfully.\033[32m")
+    print(f"\033[32mReceived response: {response}, sets number counted successfully.\033[32m")
 
 def test_count_sub_sets_ok():    
-    #* Test Counting sub sets
+    """
+    Counting all subsets.
+    Testing: CNTSS TQL command
+    Error: null
+    """
     sub_sets_count = 0
 
     for s in set_names:
@@ -97,12 +129,16 @@ def test_count_sub_sets_ok():
 
         sub_sets_count += int(response)
 
-    assert sub_sets_count == len(sub_set_names), f"\033[91mCan't count sub sets, received {sub_sets_count}, expected {len(sub_set_names)}\033[0m"
+    assert sub_sets_count == len(sub_set_names), f"\033[91mCan't count subsets, received: {sub_sets_count}, expected: {len(sub_set_names)}\033[0m"
 
-    print(f"\033[32mReceived response: {sub_sets_count}, SubSets number counted successfully.\033[32m")
+    print(f"\033[32mReceived response: {sub_sets_count}, subsets counted successfully.\033[32m")
 
 def test_count_elements_ok():
-    #* Test counting all elements
+    """
+    Counting all elements in all subsets.
+    Testing: CNTE TQL command
+    Error: null
+    """
     set_index = 0
     elements_count = 0
 
@@ -115,12 +151,16 @@ def test_count_elements_ok():
         
         set_index += 7
 
-    assert elements_count == len(elements_value), f"\033[91mCan't count elements, received {elements_count}, expected {len(elements_value)}\033[0m"
+    assert elements_count == len(elements_value), f"\033[91mCan't count elements, received: {elements_count}, expected: {len(elements_value)}\033[0m"
 
-    print(f"\033[32mReceived response: {elements_count}, Elements number counted successfully.\033[32m")
+    print(f"\033[32mReceived response: {elements_count}, elements counted successfully.\033[32m")
 
 def test_clean_sub_sets_elements_ok():
-    #* Test clean sub sets
+    """
+    Cleaning all elements in all subsets.
+    Testing: CLNSS TQL command
+    Error: null
+    """
     set_index = 0
 
     for s in set_names:
@@ -128,14 +168,18 @@ def test_clean_sub_sets_elements_ok():
             query = f"CLNSS {s} {sub_set_names[i]}"
             response = utils.make_query(query, sock)
 
-            assert response == "OK", f"\033[91mCan't clean sub sets, received {response}, expected OK\033[0m"
+            assert response == "OK", f"\033[91mCan't clean subset: {sub_set_names[i]} of set {s}, received: {response}, expected: OK\033[0m"
 
         set_index += 7
 
-    print(f"\033[32mReceived response: {response}, All Subset elements cleaned successfully.\033[32m")
+    print(f"\033[32mReceived response: {response}, subset elements cleaned successfully.\033[32m")
 
 def test_drop_sub_sets_ok():
-    #* Test drop subsets
+    """
+    Dropping all subsets.
+    Testing: DRPSS TQL command
+    Error: null
+    """
     set_index = 0
 
     for s in set_names:
@@ -143,39 +187,51 @@ def test_drop_sub_sets_ok():
             query = f"DRPSS {s} {sub_set_names[i]}"
             response = utils.make_query(query, sock)
 
-            assert response == "OK", f"\033[91mCan't drop sub sets, received {response}, expected OK\033[0m"
+            assert response == "OK", f"\033[91mCan't drop subset: {sub_set_names[i]} from set: {s}, received: {response}, expected: OK\033[0m"
         
         set_index += 7
 
-    print(f"\033[32mReceived response: {response}, All Subsets dropped successfully.\033[32m")
+    print(f"\033[32mReceived response: {response}, subsets dropped successfully.\033[32m")
 
 def test_clean_sub_sets_ok():
-    #* Test clean sets
+    """
+    Cleaning all subsets in all sets.
+    Testing: CLNS TQL command
+    Error: null
+    """
     for s in set_names:
         query = f"CLNS {s}"
         response = utils.make_query(query, sock)
 
-        assert response == "OK", f"\033[91mCan't clean sets, received {response}, expected OK\033[0m"
+        assert response == "OK", f"\033[91mCan't clean set: {s}, received: {response}, expected: OK\033[0m"
 
-    print(f"\033[32mReceived response: {response}, All Subsets cleaned successfully.\033[32m")
+    print(f"\033[32mReceived response: {response}, sets cleaned successfully.\033[32m")
 
 def test_drop_sets_ok():
-    #* Test drop sets
+    """
+    Dropping all sets.
+    Testing: DRPS TQL command
+    Error: null
+    """
     for s in set_names:
         query = f"DRPS {s}"
         response = utils.make_query(query, sock)
 
-        assert response == "OK", f"\033[91mCan't drop sets, received {response}, expected OK\033[0m"
+        assert response == "OK", f"\033[91mCan't drop set: {s}, received: {response}, expected: OK\033[0m"
 
-    print(f"\033[32mReceived response: {response}, All Sets dropped successfully.\033[32m")
+    print(f"\033[32mReceived response: {response}, sets dropped successfully.\033[32m")
 
 def test_clean_sets_ok():
-    #* Clean all sets.
+    """
+    Cleaning all sets.
+    Testing: CLN TQL command
+    Error: null
+    """
     response = utils.make_query("CLN", sock)
 
-    assert response == "OK", f"\033[91mCan't clean sets, received {response}, expected OK\033[0m"
+    assert response == "OK", f"\033[91mCan't clean sets, received: {response}, expected: OK\033[0m"
 
-    print(f"\033[32mReceived response: {response}, All Sets cleaned successfully.\033[32m")
+    print(f"\033[32mReceived response: {response},sets cleaned successfully.\033[32m")
 
 
 def main():
@@ -196,4 +252,4 @@ def main():
 if __name__ == "__main__":
     main()
     sock.close()
-    print('\033[34mAll test successfully passed in:\033[34m', time.time() - st, 'seconds')
+    print('\033[34mAll tests successfully passed in:\033[34m', time.time() - st, 'seconds')

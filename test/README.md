@@ -25,6 +25,17 @@ Incorrect: `test_new_sub_set`
 > [!NOTE]
 > Consider following python naming convention and code style.
 
+Each function must have description such as:
+```python
+    """
+    Connecting to database and creating a session.
+    Testing: CON TQL command
+    Error: null
+    """
+```
+
+The first line(s) are description of test. The testing part describes what exactly the function is testing. And the error describe which kind of error the tets must return, if it was an OK test, you can use null as its value.
+
 Since in we use a connection a server with once instance, consider that sometimes order of commands can affect the result of test so make sure you do them in correct order and restart database each time. For example you can't clean a set when you dropped it!
 
 > [!IMPORTANT]
