@@ -7,6 +7,7 @@ import random
 # TODO: writing test for method GET.
 # TODO: adding test bad cases such as invalid set/subset name.
 # TODO: popping items from global variables while dropping or cleaning them(?)
+# TODO: adding python tests to github workflows.
 
 st = time.time()
 
