@@ -2,14 +2,14 @@ package main
 
 import (
 	"github.com/spf13/cobra"
-	timetrace "github.com/zurvan-lab/TimeTrace"
-	"github.com/zurvan-lab/TimeTrace/cmd/commands"
+	tt "github.com/zurvan-lab/timetrace"
+	"github.com/zurvan-lab/timetrace/cmd/commands"
 )
 
 func main() {
 	rootCmd := &cobra.Command{
 		Use:     "ttrace",
-		Version: timetrace.StringVersion(),
+		Version: tt.StringVersion(),
 	}
 
 	commands.RunCommand(rootCmd)

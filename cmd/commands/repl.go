@@ -10,7 +10,6 @@ import (
 
 	"github.com/peterh/liner"
 	cobra "github.com/spf13/cobra"
-	"github.com/zurvan-lab/TimeTrace/utils/errors"
 )
 
 /*
@@ -94,7 +93,9 @@ func ConnectCommand(parentCmd *cobra.Command) {
 				}
 			}
 		} else {
-			ExitOnError(cmd, fmt.Errorf("%w: %s", errors.ErrInvalidCommand, response))
+			ExitOnError(cmd, fmt.Errorf("%w: %s", InvalidAuthInfoError{
+				command: conQuery,
+			}, response))
 		}
 	}
 }

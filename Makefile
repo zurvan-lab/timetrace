@@ -11,7 +11,7 @@ build-cli:
 	go build -o ./build/ttrace ./cmd/main.go
 
 ### Testing
-unit_test:
+unit-test:
 	go test $(PACKAGES)
 
 test:

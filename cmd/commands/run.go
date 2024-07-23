@@ -2,11 +2,10 @@ package commands
 
 import (
 	cobra "github.com/spf13/cobra"
-	"github.com/zurvan-lab/TimeTrace/config"
-	"github.com/zurvan-lab/TimeTrace/core/database"
-	"github.com/zurvan-lab/TimeTrace/core/server"
-	tte "github.com/zurvan-lab/TimeTrace/utils/errors"
-	ttlog "github.com/zurvan-lab/TimeTrace/utils/log"
+	"github.com/zurvan-lab/timetrace/config"
+	"github.com/zurvan-lab/timetrace/core/database"
+	"github.com/zurvan-lab/timetrace/core/server"
+	ttlog "github.com/zurvan-lab/timetrace/log"
 )
 
 func RunCommand(parentCmd *cobra.Command) {
@@ -16,14 +15,16 @@ func RunCommand(parentCmd *cobra.Command) {
 	}
 	parentCmd.AddCommand(run)
 
-	confingPath := run.Flags().StringP("config", "c", "", "Path to your config.yaml file.")
+	configPath := run.Flags().StringP("config", "c", "", "Path to your config.yaml file.")
 
 	run.Run = func(cmd *cobra.Command, args []string) {
-		if confingPath == nil || *confingPath == "" {
-			ExitOnError(cmd, tte.ErrInavlidConfigPath)
+		if configPath == nil || *configPath == "" {
+			ExitOnError(cmd, InvalidConfigPathError{
+				path: *configPath,
+			})
 		}
 
-		cfg, err := config.LoadFromFile(*confingPath)
+		cfg, err := config.LoadFromFile(*configPath)
 		if err != nil {
 			ExitOnError(cmd, err)
 		}

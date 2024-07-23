@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/zurvan-lab/TimeTrace/config"
+	"github.com/zurvan-lab/timetrace/config"
 )
 
 func TestDataBase(t *testing.T) {

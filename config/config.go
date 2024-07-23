@@ -6,7 +6,6 @@ import (
 	"os"
 	"slices"
 
-	tte "github.com/zurvan-lab/TimeTrace/utils/errors"
 	"gopkg.in/yaml.v2"
 )
 
@@ -44,7 +43,9 @@ type User struct {
 
 func (conf *Config) BasicCheck() error {
 	if len(conf.Users) == 0 {
-		return tte.ErrInvalidUsers
+		return BasicCheckError{
+			reason: "at least one user must be defined in config",
+		}
 	}
 
 	for _, u := range conf.Users {
@@ -57,7 +58,10 @@ func (conf *Config) BasicCheck() error {
 		}
 
 		if allCmds && len(u.Cmds) > 1 {
-			return tte.ErrSpecificAndAllCommandSameAtTime
+			return BasicCheckError{
+				reason: "you can't use all (*) commands and specific commands" +
+					" permission for one user at the same time",
+			}
 		}
 	}
 

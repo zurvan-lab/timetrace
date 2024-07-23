@@ -11,7 +11,7 @@ import (
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"github.com/zurvan-lab/TimeTrace/config"
+	"github.com/zurvan-lab/timetrace/config"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
