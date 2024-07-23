@@ -1,7 +1,6 @@
 import socket
 import time
 import utils
-import random
 
 #! GET method is not tested here now.
 # TODO: writing test for method GET.
@@ -11,15 +10,16 @@ import random
 
 st = time.time()
 
-#? Global variables
+# ? Global variables
 sub_set_names = []
 set_names = []
 elements_value = []
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-server_address = ('localhost', 7070) #! You can change port and host for testing.
+server_address = ("localhost", 7070)  #! You can change port and host for testing.
 sock.connect(server_address)
+
 
 def test_connect_ok():
     """
@@ -27,12 +27,15 @@ def test_connect_ok():
     Testing: CON TQL command
     Error: null
     """
-    query = "CON root super_secret_password" #! Considers you config is default.
+    query = "CON root super_secret_password"  #! Considers you config is default.
     response = utils.make_query(query, sock)
 
-    assert response == "OK", f"\033[91mCan't connect to server with default info, received: {response}, expected: OK\033[0m"
+    assert (
+        response == "OK"
+    ), f"\033[91mCan't connect to server with default info, received: {response}, expected: OK\033[0m"
 
     print(f"\033[32mReceived response: {response}, Connection test Passed.\033[32m")
+
 
 def test_ping_ok():
     """
@@ -42,9 +45,12 @@ def test_ping_ok():
     """
     response = utils.make_query("PING", sock)
 
-    assert response == "PONG", f"\033[91mCan't ping the database, received: {response}, expected: PONG\033[0m"
+    assert (
+        response == "PONG"
+    ), f"\033[91mCan't ping the database, received: {response}, expected: PONG\033[0m"
 
     print(f"\033[32mReceived response: {response}, we are connected!\033[32m")
+
 
 def test_new_set_ok():
     """
@@ -53,14 +59,19 @@ def test_new_set_ok():
     Error: null
     """
     for i in range(10):
-        set_names.append(utils.get_random_string_name(i+2))
+        set_names.append(utils.get_random_string_name(i + 2))
 
         query = f"SET {set_names[i]}"
         response = utils.make_query(query, sock)
 
-        assert response == "OK", f"\033[91mCan't create set: {set_names[i]}, received: {response}, expected: OK\033[0m"
+        assert (
+            response == "OK"
+        ), f"\033[91mCan't create set: {set_names[i]}, received: {response}, expected: OK\033[0m"
 
-    print(f"\033[32mReceived response: {response}, {len(set_names)} sets created successfully.\nSets: {set_names}\033[32m")
+    print(
+        f"\033[32mReceived response: {response}, {len(set_names)} sets created successfully.\nSets: {set_names}\033[32m"
+    )
+
 
 def test_new_sub_set_ok():
     """
@@ -70,14 +81,19 @@ def test_new_sub_set_ok():
     """
     for s in set_names:
         for i in range(7):
-            sub_set_names.append(utils.get_random_string_name(i+2))
+            sub_set_names.append(utils.get_random_string_name(i + 2))
 
             query = f"SSET {s} {sub_set_names[i]}"
             response = utils.make_query(query, sock)
 
-            assert response == "OK", f"\033[91mCan't create subset: {sub_set_names[i]} in set {s}, received: {response}, expected: OK\033[0m"
+            assert (
+                response == "OK"
+            ), f"\033[91mCan't create subset: {sub_set_names[i]} in set {s}, received: {response}, expected: OK\033[0m"
 
-    print(f"\033[32mReceived response: {response}, {len(sub_set_names)} subsets created successfully.\nSubsets: {sub_set_names}\033[32m")
+    print(
+        f"\033[32mReceived response: {response}, {len(sub_set_names)} subsets created successfully.\nSubsets: {sub_set_names}\033[32m"
+    )
+
 
 def test_push_element_ok():
     """
@@ -90,19 +106,24 @@ def test_push_element_ok():
     for s in set_names:
         for i in range(7):
             for _ in range(1_000):
-                element_value = utils.get_random_string_name(i+8)
+                element_value = utils.get_random_string_name(i + 8)
                 elements_value.append(element_value)
 
                 element_time = int(time.mktime(time.gmtime()))
                 query = f"PUSH {s} {sub_set_names[i]} {element_value} {element_time}"
                 response = utils.make_query(query, sock)
 
-                assert response == "OK", f"\033[91mCan't push element with value of: {elements_value[i]} and time of: {element_time}, received: {response}, expected: OK\033[0m"
+                assert (
+                    response == "OK"
+                ), f"\033[91mCan't push element with value of: {elements_value[i]} and time of: {element_time}, received: {response}, expected: OK\033[0m"
 
         set_index += 7
 
-    #? Change `elements_value[:10]` to get more or less elements.
-    print(f"\033[32mReceived response: {response}, {len(elements_value)} elements pushed successfully.\nElements: {elements_value[:10]}\033[32m")
+    # ? Change `elements_value[:10]` to get more or less elements.
+    print(
+        f"\033[32mReceived response: {response}, {len(elements_value)} elements pushed successfully.\nElements: {elements_value[:10]}\033[32m"
+    )
+
 
 def test_count_sets_ok():
     """
@@ -112,11 +133,16 @@ def test_count_sets_ok():
     """
     response = utils.make_query("CNTS", sock)
 
-    assert response == str(len(set_names)), f"\033[91mCan't count sets, received: {response}, expected: {len(set_names)}\033[0m"
+    assert (
+        response == str(len(set_names))
+    ), f"\033[91mCan't count sets, received: {response}, expected: {len(set_names)}\033[0m"
 
-    print(f"\033[32mReceived response: {response}, sets number counted successfully.\033[32m")
+    print(
+        f"\033[32mReceived response: {response}, sets number counted successfully.\033[32m"
+    )
 
-def test_count_sub_sets_ok():    
+
+def test_count_sub_sets_ok():
     """
     Counting all subsets.
     Testing: CNTSS TQL command
@@ -130,9 +156,14 @@ def test_count_sub_sets_ok():
 
         sub_sets_count += int(response)
 
-    assert sub_sets_count == len(sub_set_names), f"\033[91mCan't count subsets, received: {sub_sets_count}, expected: {len(sub_set_names)}\033[0m"
+    assert (
+        sub_sets_count == len(sub_set_names)
+    ), f"\033[91mCan't count subsets, received: {sub_sets_count}, expected: {len(sub_set_names)}\033[0m"
 
-    print(f"\033[32mReceived response: {sub_sets_count}, subsets counted successfully.\033[32m")
+    print(
+        f"\033[32mReceived response: {sub_sets_count}, subsets counted successfully.\033[32m"
+    )
+
 
 def test_count_elements_ok():
     """
@@ -149,12 +180,17 @@ def test_count_elements_ok():
             response = utils.make_query(query, sock)
 
             elements_count += int(response)
-        
+
         set_index += 7
 
-    assert elements_count == len(elements_value), f"\033[91mCan't count elements, received: {elements_count}, expected: {len(elements_value)}\033[0m"
+    assert (
+        elements_count == len(elements_value)
+    ), f"\033[91mCan't count elements, received: {elements_count}, expected: {len(elements_value)}\033[0m"
 
-    print(f"\033[32mReceived response: {elements_count}, elements counted successfully.\033[32m")
+    print(
+        f"\033[32mReceived response: {elements_count}, elements counted successfully.\033[32m"
+    )
+
 
 def test_clean_sub_sets_elements_ok():
     """
@@ -169,11 +205,16 @@ def test_clean_sub_sets_elements_ok():
             query = f"CLNSS {s} {sub_set_names[i]}"
             response = utils.make_query(query, sock)
 
-            assert response == "OK", f"\033[91mCan't clean subset: {sub_set_names[i]} of set {s}, received: {response}, expected: OK\033[0m"
+            assert (
+                response == "OK"
+            ), f"\033[91mCan't clean subset: {sub_set_names[i]} of set {s}, received: {response}, expected: OK\033[0m"
 
         set_index += 7
 
-    print(f"\033[32mReceived response: {response}, subset elements cleaned successfully.\033[32m")
+    print(
+        f"\033[32mReceived response: {response}, subset elements cleaned successfully.\033[32m"
+    )
+
 
 def test_drop_sub_sets_ok():
     """
@@ -188,11 +229,16 @@ def test_drop_sub_sets_ok():
             query = f"DRPSS {s} {sub_set_names[i]}"
             response = utils.make_query(query, sock)
 
-            assert response == "OK", f"\033[91mCan't drop subset: {sub_set_names[i]} from set: {s}, received: {response}, expected: OK\033[0m"
-        
+            assert (
+                response == "OK"
+            ), f"\033[91mCan't drop subset: {sub_set_names[i]} from set: {s}, received: {response}, expected: OK\033[0m"
+
         set_index += 7
 
-    print(f"\033[32mReceived response: {response}, subsets dropped successfully.\033[32m")
+    print(
+        f"\033[32mReceived response: {response}, subsets dropped successfully.\033[32m"
+    )
+
 
 def test_clean_sub_sets_ok():
     """
@@ -204,9 +250,12 @@ def test_clean_sub_sets_ok():
         query = f"CLNS {s}"
         response = utils.make_query(query, sock)
 
-        assert response == "OK", f"\033[91mCan't clean set: {s}, received: {response}, expected: OK\033[0m"
+        assert (
+            response == "OK"
+        ), f"\033[91mCan't clean set: {s}, received: {response}, expected: OK\033[0m"
 
     print(f"\033[32mReceived response: {response}, sets cleaned successfully.\033[32m")
+
 
 def test_drop_sets_ok():
     """
@@ -218,9 +267,12 @@ def test_drop_sets_ok():
         query = f"DRPS {s}"
         response = utils.make_query(query, sock)
 
-        assert response == "OK", f"\033[91mCan't drop set: {s}, received: {response}, expected: OK\033[0m"
+        assert (
+            response == "OK"
+        ), f"\033[91mCan't drop set: {s}, received: {response}, expected: OK\033[0m"
 
     print(f"\033[32mReceived response: {response}, sets dropped successfully.\033[32m")
+
 
 def test_clean_sets_ok():
     """
@@ -230,7 +282,9 @@ def test_clean_sets_ok():
     """
     response = utils.make_query("CLN", sock)
 
-    assert response == "OK", f"\033[91mCan't clean sets, received: {response}, expected: OK\033[0m"
+    assert (
+        response == "OK"
+    ), f"\033[91mCan't clean sets, received: {response}, expected: OK\033[0m"
 
     print(f"\033[32mReceived response: {response},sets cleaned successfully.\033[32m")
 
@@ -250,7 +304,10 @@ def main():
     test_drop_sets_ok()
     test_clean_sets_ok()
 
+
 if __name__ == "__main__":
     main()
     sock.close()
-    print('\033[34mAll tests successfully passed in:\033[34m', time.time() - st, 'seconds')
+    print(
+        "\033[34mAll tests successfully passed in:\033[34m", time.time() - st, "seconds"
+    )
