@@ -27,7 +27,7 @@ jobs:
         sudo apt install zip
 
     - name: Install Go
-      uses: actions/setup-go@v3
+      uses: actions/setup-go@v5
       with:
         go-version: 1.21.1
 
@@ -59,7 +59,7 @@ jobs:
     needs: [build-cli]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Create SHA256SUMS file
       run: |
         echo "${{ needs.build-cli.outputs.checksums }}" >> SHA256SUMS
