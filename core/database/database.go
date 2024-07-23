@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/zurvan-lab/TimeTrace/config"
+	"github.com/zurvan-lab/timetrace/config"
 )
 
 type Database struct {

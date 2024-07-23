@@ -4,9 +4,9 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/zurvan-lab/TimeTrace/config"
-	"github.com/zurvan-lab/TimeTrace/core/TQL/parser"
-	"github.com/zurvan-lab/TimeTrace/core/database"
+	"github.com/zurvan-lab/timetrace/config"
+	"github.com/zurvan-lab/timetrace/core/TQL/parser"
+	"github.com/zurvan-lab/timetrace/core/database"
 )
 
 func TestExecute(t *testing.T) {

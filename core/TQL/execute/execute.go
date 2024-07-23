@@ -1,6 +1,6 @@
 package execute
 
-import "github.com/zurvan-lab/TimeTrace/core/database"
+import "github.com/zurvan-lab/timetrace/core/database"
 
 type Executor func(database.IDataBase, []string) string
 

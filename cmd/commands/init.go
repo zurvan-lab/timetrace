@@ -5,7 +5,7 @@ import (
 	"os"
 
 	cobra "github.com/spf13/cobra"
-	"github.com/zurvan-lab/TimeTrace/config"
+	"github.com/zurvan-lab/timetrace/config"
 )
 
 func InitCommand(parentCmd *cobra.Command) {

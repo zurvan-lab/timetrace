@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	tte "github.com/zurvan-lab/TimeTrace/utils/errors"
 )
 
 func TestDefaultConfig(t *testing.T) {
@@ -56,10 +55,10 @@ func TestBasicCheck(t *testing.T) {
 
 	c.Users = []User{}
 	err = c.BasicCheck()
-	assert.Error(t, tte.ErrInvalidUsers, err)
+	assert.Error(t, BasicCheckError{}, err)
 
 	c.Users = []User{DefaultConfig().Users[0]}
 	c.Users[0].Cmds = []string{"*", "GET"}
 	err = c.BasicCheck()
-	assert.Error(t, tte.ErrSpecificAndAllCommandSameAtTime, err)
+	assert.Error(t, BasicCheckError{}, err)
 }

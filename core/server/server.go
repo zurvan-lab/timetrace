@@ -8,12 +8,11 @@ import (
 	"sync"
 	"syscall"
 
-	"github.com/zurvan-lab/TimeTrace/config"
-	"github.com/zurvan-lab/TimeTrace/core/TQL/execute"
-	parser "github.com/zurvan-lab/TimeTrace/core/TQL/parser"
-	"github.com/zurvan-lab/TimeTrace/core/database"
-	"github.com/zurvan-lab/TimeTrace/utils/errors"
-	ttlogger "github.com/zurvan-lab/TimeTrace/utils/log"
+	"github.com/zurvan-lab/timetrace/config"
+	"github.com/zurvan-lab/timetrace/core/TQL/execute"
+	parser "github.com/zurvan-lab/timetrace/core/TQL/parser"
+	"github.com/zurvan-lab/timetrace/core/database"
+	ttlog "github.com/zurvan-lab/timetrace/log"
 )
 
 type Server struct {
@@ -48,14 +47,14 @@ func (s *Server) Start() error {
 
 	s.Listener = listener
 
-	ttlogger.Info("server started", "address", s.ListenAddress, "db-name", s.Config.Name)
+	ttlog.Info("server started", "address", s.ListenAddress, "db-name", s.Config.Name)
 
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
 
 	go func() {
 		sig := <-signalChan
-		ttlogger.Info("Received signal, shutting down...", "signal", sig, "db-name", s.Config.Name)
+		ttlog.Info("Received signal, shutting down...", "signal", sig, "db-name", s.Config.Name)
 
 		close(s.QuitChan)
 		s.Stop()
@@ -81,20 +80,20 @@ func (s *Server) AcceptConnections() {
 
 		conn, err := s.Listener.Accept()
 		if err != nil {
-			ttlogger.Error("error accepting connection", "error", err, "db-name", s.Config.Name)
+			ttlog.Error("error accepting connection", "error", err, "db-name", s.Config.Name)
 
 			continue
 		}
 
 		user, err := s.Authenticate(conn)
 		if err != nil {
-			ttlogger.Warn("invalid user try to connect", "db-name", s.Config.Name)
+			ttlog.Warn("invalid user try to connect", "db-name", s.Config.Name)
 		} else {
 			s.ActiveConnsMux.Lock()
 			s.ActiveConnections[conn] = user
 			s.ActiveConnsMux.Unlock()
 
-			ttlogger.Info("new connection", "remote address", conn.RemoteAddr().String(), "db-name", s.Config.Name)
+			ttlog.Info("new connection", "remote address", conn.RemoteAddr().String(), "db-name", s.Config.Name)
 
 			s.Wg.Add(1)
 			go s.HandleConnection(conn)
@@ -113,7 +112,7 @@ func (s *Server) HandleConnection(conn net.Conn) {
 
 		n, err := conn.Read(buffer)
 		if err != nil {
-			ttlogger.Info("Connection closed", "remote address", conn.RemoteAddr().String(), "db-name", s.Config.Name)
+			ttlog.Info("Connection closed", "remote address", conn.RemoteAddr().String(), "db-name", s.Config.Name)
 
 			s.ActiveConnsMux.Lock()
 			delete(s.ActiveConnections, conn)
@@ -129,7 +128,7 @@ func (s *Server) HandleConnection(conn net.Conn) {
 
 			_, err = conn.Write([]byte(result))
 			if err != nil {
-				ttlogger.Error("Can't write on TCP connection", "error", err, "db-name", s.Config.Name)
+				ttlog.Error("Can't write on TCP connection", "error", err, "db-name", s.Config.Name)
 			}
 		} else {
 			_, _ = conn.Write([]byte(database.INVALID))
@@ -142,7 +141,7 @@ func (s *Server) Authenticate(conn net.Conn) (*config.User, error) {
 
 	n, err := conn.Read(buffer)
 	if err != nil {
-		ttlogger.Error("error reading connection", "error", err, "db-name", s.Config.Name)
+		ttlog.Error("error reading connection", "error", err, "db-name", s.Config.Name)
 
 		_ = conn.Close()
 	}
@@ -151,14 +150,18 @@ func (s *Server) Authenticate(conn net.Conn) (*config.User, error) {
 	if query.Command != "CON" {
 		_ = conn.Close()
 
-		return nil, errors.ErrAuth
+		return nil, AuthenticateError{
+			reason: "user need to make a session first",
+		}
 	}
 
 	result := execute.Execute(query, s.db)
 	if result != database.OK {
 		_ = conn.Close()
 
-		return nil, errors.ErrAuth
+		return nil, AuthenticateError{
+			reason: "user name or password is invalid",
+		}
 	}
 
 	_, _ = conn.Write([]byte(result))

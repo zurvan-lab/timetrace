@@ -3,7 +3,7 @@ package core
 import (
 	"strings"
 
-	"github.com/zurvan-lab/TimeTrace/core/database"
+	"github.com/zurvan-lab/timetrace/core/database"
 )
 
 // parsing TQL queries. see: docs/TQL.
